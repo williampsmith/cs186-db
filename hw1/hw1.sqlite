@@ -1,0 +1,21 @@
+# Q1
+SELECT DISTINCT DraftFrom 
+FROM Draft 
+WHERE FirstName = "Lew" AND LastName = "Alcindor";
+
+#Q2
+SELECT DISTINCT T.Name 
+FROM Teams AS T, Players AS P 
+WHERE P.TeamID = T.TeamID AND P.PlayerID = "abdulka01";
+
+#Q3
+SELECT COUNT(*) FROM 
+	(SELECT TeamID 
+	 FROM Players 
+	 WHERE PlayerID = "abdulka01" 
+	 GROUP BY TeamID);
+
+#Q4, not yet correst
+SELECT DISTINCT M.FirstName, M.LastName 
+FROM Master AS M, AllStar AS A 
+WHERE M.college = "California" AND M.FirstName = A.FirstName AND M.LastName = A.LastName;
