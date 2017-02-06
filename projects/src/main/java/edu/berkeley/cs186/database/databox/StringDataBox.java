@@ -4,7 +4,7 @@ import java.lang.String;
 import java.nio.charset.Charset;
 
 /**
- * Fixed-length String data type which serializes to UTF-8 bytes.
+ * Fixed-length String data type which serializes `o UTF-8 bytes.
  */
 public class StringDataBox extends DataBox {
   private String s;

@@ -1,11 +1,12 @@
 package edu.berkeley.cs186.database.table;
 
+import com.sun.deploy.util.ArrayUtil;
 import edu.berkeley.cs186.database.databox.*;
+import edu.berkeley.cs186.database.io.Page;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * The Schema of a particular table.
@@ -44,8 +45,22 @@ public class Schema {
    */
   public Record verify(List<DataBox> values) throws SchemaException {
     // TODO: implement me!
-    return null;
+    if (this.size != values.size()) {
+      throw new SchemaException("Size of record does not match size of schema for this table");
+      // return; // todo: check this
+    }
+
+    for (int i = 0; i < values.size(); i++) {
+      if (values.get(i).getClass() != this.fieldTypes.get(i).getClass() ||
+              values.get(i).getSize() != this.fieldTypes.get(i).getSize()) {
+        throw new SchemaException("Values do not match schema.");
+      }
+    }
+
+    return new Record(values);
   }
+
+
 
   /**
    * Serializes the provided record into a byte[]. Uses the DataBoxes'
@@ -58,7 +73,23 @@ public class Schema {
    */
   public byte[] encode(Record record) {
     // TODO: implement me!
-    return null;
+
+    // get size of concatenated array
+    int totalLen = 0;
+    for (DataBox value : record.getValues()) {
+      totalLen += value.getBytes().length;
+    }
+
+    byte[] serialization = new byte[totalLen];
+    int i = 0;
+
+    for (DataBox value : record.getValues()) {
+      byte[] serializedValue = value.getBytes();
+      System.arraycopy(serializedValue, 0, serialization, i, serializedValue.length);
+      i += serializedValue.length;
+    }
+
+    return serialization;
   }
 
   /**
@@ -70,6 +101,13 @@ public class Schema {
    */
   public Record decode(byte[] input) {
     // TODO: implement me!
+    i = 0;
+    List<DataBox> values = new ArrayList<DataBox>();
+
+    for (DataBox dataBox : this.fieldTypes) {
+      byte[] subArray = Arrays.copyOfRange(input, i, i + dataBox.getSize());
+      i += dataBox.getSize();
+    }
     return null;
   }
 
