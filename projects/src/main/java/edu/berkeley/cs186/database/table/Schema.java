@@ -1,12 +1,15 @@
 package edu.berkeley.cs186.database.table;
 
-import com.sun.deploy.util.ArrayUtil;
 import edu.berkeley.cs186.database.databox.*;
 import edu.berkeley.cs186.database.io.Page;
+import sun.nio.cs.StandardCharsets;
 
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.*;
+import java.io.ByteArrayInputStream;
 
 /**
  * The Schema of a particular table.
@@ -27,6 +30,7 @@ public class Schema {
     this.fields = fields;
     this.fieldTypes = fieldTypes;
     this.size = 0;
+
 
     for (DataBox dt : fieldTypes) {
       this.size += dt.getSize();
@@ -51,7 +55,7 @@ public class Schema {
     }
 
     for (int i = 0; i < values.size(); i++) {
-      if (values.get(i).getClass() != this.fieldTypes.get(i).getClass() ||
+      if (values.get(i).type() != this.fieldTypes.get(i).type() ||
               values.get(i).getSize() != this.fieldTypes.get(i).getSize()) {
         throw new SchemaException("Values do not match schema.");
       }
@@ -60,7 +64,8 @@ public class Schema {
     return new Record(values);
   }
 
-
+  // addon
+  public int getSize() { return this.size; }
 
   /**
    * Serializes the provided record into a byte[]. Uses the DataBoxes'
@@ -77,19 +82,27 @@ public class Schema {
     // get size of concatenated array
     int totalLen = 0;
     for (DataBox value : record.getValues()) {
-      totalLen += value.getBytes().length;
+      totalLen += value.getSize();
     }
 
-    byte[] serialization = new byte[totalLen];
-    int i = 0;
-
+    ByteBuffer serialization = ByteBuffer.allocate(totalLen);
     for (DataBox value : record.getValues()) {
       byte[] serializedValue = value.getBytes();
-      System.arraycopy(serializedValue, 0, serialization, i, serializedValue.length);
-      i += serializedValue.length;
+      serialization.put(serializedValue);
     }
 
-    return serialization;
+    return serialization.array();
+
+//    byte[] serialization = new byte[totalLen];
+//    int i = 0;
+//
+//    for (DataBox value : record.getValues()) {
+//      byte[] serializedValue = value.getBytes();
+//      System.arraycopy(serializedValue, 0, serialization, i, serializedValue.length);
+//      i += serializedValue.length;
+//    }
+//
+//    return serialization;
   }
 
   /**
@@ -101,14 +114,44 @@ public class Schema {
    */
   public Record decode(byte[] input) {
     // TODO: implement me!
-    i = 0;
+    int i = 0;
     List<DataBox> values = new ArrayList<DataBox>();
+    ByteArrayInputStream bytes;
+    ObjectInputStream obj;
 
     for (DataBox dataBox : this.fieldTypes) {
       byte[] subArray = Arrays.copyOfRange(input, i, i + dataBox.getSize());
       i += dataBox.getSize();
+
+      DataBox.Types type = dataBox.type();
+
+      DataBox field;
+
+      switch(type) {
+        case INT:
+          field = new IntDataBox(subArray);
+          break;
+        case STRING:
+          field = new StringDataBox(subArray);
+          break;
+        case BOOL:
+          field = new BoolDataBox(subArray);
+          break;
+        case FLOAT:
+        default:
+          field = new FloatDataBox(subArray);
+          break;
+      }
+
+      values.add(field);
     }
-    return null;
+
+    try {
+      return this.verify(values);
+    } catch (Exception e){
+      System.out.println("Error. schema fails verification " + e.getMessage());
+      return null;
+    }
   }
 
   public int getEntrySize() {

@@ -153,7 +153,10 @@ public class Table implements Iterable<Record>, Closeable {
    *         correspond to the schema of this table
    */
   public RecordID addRecord(List<DataBox> values) throws DatabaseException {
-    // TODO: implement me!
+    int pageNum = this.freePages.first();
+    Page openPage = this.allocator.fetchPage(pageNum);
+
+    // todo: finish me
     return null;
   }
 
@@ -166,8 +169,9 @@ public class Table implements Iterable<Record>, Closeable {
    * @throws DatabaseException if rid does not correspond to a valid record
    */
   public Record deleteRecord(RecordID rid) throws DatabaseException {
-    // TODO: implement me!
-    return null;
+    Page page = this.allocator.fetchPage(rid.getPageNum());
+    this.writeBitToHeader(page, rid.getEntryNumber(), (byte)0);
+    return this.getRecord(rid);
   }
 
   /**
@@ -215,8 +219,9 @@ public class Table implements Iterable<Record>, Closeable {
    * @throws DatabaseException if rid does not reference an existing data page slot
    */
   private boolean checkRecordIDValidity(RecordID rid) throws DatabaseException {
-    // TODO: implement me!
-    return false;
+    Page page = this.allocator.fetchPage(rid.getPageNum());
+    byte[] pageHeader = this.readPageHeader(page);
+    return pageHeader[rid.getEntryNumber()] == 1;
   }
 
   /**
@@ -229,7 +234,9 @@ public class Table implements Iterable<Record>, Closeable {
    * Should set this.pageHeaderSize and this.numEntriesPerPage.
    */
   private void setEntryCounts() {
-    // TODO: implement me!
+    int recordSizeInBits = this.schema.getSize() * 8;
+    this.numEntriesPerPage = (int)((Page.pageSize * 8.0) / (1.0 * recordSizeInBits + 1));
+    this.pageHeaderSize = (int)java.lang.Math.ceil(this.numEntriesPerPage / 8.0);
   }
 
   /**
