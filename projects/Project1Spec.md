@@ -82,9 +82,9 @@ these projects you should have Java 7 (aka 1.7) installed on your machine,
 and run `brew cask install java7`.
 
 **NOTE**: If you're running Windows, make sure that the JDK directory where you
-installed Java (e.g. `C:\Program Files\Java\jdk1.7.0_79`) is added to both your
-`PATH` and `JAVA_HOME` environment variables. If you're developing on Windows
-you should know how to do this, otherwise it's good practice to learn.
+installed Java (e.g. `C:\Program Files\Java\jdk1.7.0_79\bin`) is added to both
+your `PATH` and `JAVA_HOME` environment variables. If you're developing on
+Windows you should know how to do this, otherwise it's good practice to learn.
 
 ### Maven
 
