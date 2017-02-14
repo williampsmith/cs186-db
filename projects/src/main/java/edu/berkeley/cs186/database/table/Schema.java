@@ -48,10 +48,8 @@ public class Schema {
    * @throws SchemaException if the values specified don't conform to this Schema
    */
   public Record verify(List<DataBox> values) throws SchemaException {
-    // TODO: implement me!
-    if (this.size != values.size()) {
+    if (this.fieldTypes.size() != values.size()) {
       throw new SchemaException("Size of record does not match size of schema for this table");
-      // return; // todo: check this
     }
 
     for (int i = 0; i < values.size(); i++) {
@@ -77,8 +75,6 @@ public class Schema {
    * @return the encoded record as a byte[]
    */
   public byte[] encode(Record record) {
-    // TODO: implement me!
-
     // get size of concatenated array
     int totalLen = 0;
     for (DataBox value : record.getValues()) {
@@ -92,17 +88,6 @@ public class Schema {
     }
 
     return serialization.array();
-
-//    byte[] serialization = new byte[totalLen];
-//    int i = 0;
-//
-//    for (DataBox value : record.getValues()) {
-//      byte[] serializedValue = value.getBytes();
-//      System.arraycopy(serializedValue, 0, serialization, i, serializedValue.length);
-//      i += serializedValue.length;
-//    }
-//
-//    return serialization;
   }
 
   /**
@@ -132,6 +117,7 @@ public class Schema {
           field = new IntDataBox(subArray);
           break;
         case STRING:
+
           field = new StringDataBox(subArray);
           break;
         case BOOL:

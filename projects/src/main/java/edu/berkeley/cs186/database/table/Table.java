@@ -110,6 +110,8 @@ public class Table implements Iterable<Record>, Closeable {
     this(schema, tableName, FILENAME_PREFIX);
   }
 
+  public long getNumRecords() { return this.numRecords; }
+
   /**
    * This constructor is used for creating a table in some specified directory.
    *
@@ -153,11 +155,51 @@ public class Table implements Iterable<Record>, Closeable {
    *         correspond to the schema of this table
    */
   public RecordID addRecord(List<DataBox> values) throws DatabaseException {
-    int pageNum = this.freePages.first();
+    Record newRecord;
+    try {
+      newRecord = this.schema.verify(values);
+    }
+    catch(SchemaException e) {
+      throw new DatabaseException("Error: Value format does not conform to schema. " + e);
+    }
+
+    int pageNum;
+    if (this.freePages.size() == 0) { // no free pages. Must allocate a new one
+      pageNum = this.allocator.allocPage();
+      this.freePages.add(pageNum);
+    } else {
+      pageNum = this.freePages.first(); // return
+    }
+
     Page openPage = this.allocator.fetchPage(pageNum);
 
-    // todo: finish me
-    return null;
+    byte[] header = this.readPageHeader(openPage);
+
+    // find index of open record
+    int index;
+    try {
+      index = this.getEmptyRecordIndex(header);
+    } catch (DatabaseException e) { // should never happen since page was in this.freePages
+      System.out.println("Error. Page is full.");
+      return null;
+    }
+
+    // get span of bytes for ith record
+    int recordSize = this.schema.getSize();
+    int position = this.pageHeaderSize + (recordSize * index);
+
+    byte[] serializedRecord = this.schema.encode(newRecord);
+    openPage.writeBytes(position, recordSize, serializedRecord);
+    this.writeBitToHeader(openPage, index, (byte)1);
+    this.stats.addRecord(newRecord);
+    this.numRecords++;
+
+    if (!this.spaceOnPage(openPage)) { // if full, remove page from empty pages list
+      this.freePages.pollFirst();
+    }
+
+//    System.out.println("page num: " + pageNum + ", index: " + index);
+    return new RecordID(pageNum, index);
   }
 
   /**
@@ -169,10 +211,23 @@ public class Table implements Iterable<Record>, Closeable {
    * @throws DatabaseException if rid does not correspond to a valid record
    */
   public Record deleteRecord(RecordID rid) throws DatabaseException {
+    if (!this.checkRecordIDValidity(rid)) {
+      throw new DatabaseException("Error: Record ID does not correspond to a valid record.");
+    }
+
     Page page = this.allocator.fetchPage(rid.getPageNum());
+    if (!this.spaceOnPage(page)) { // if previously full, add to free pages list
+      this.freePages.add(rid.getPageNum());
+    }
+
+    Record removedRecord = this.getRecord(rid);
     this.writeBitToHeader(page, rid.getEntryNumber(), (byte)0);
-    return this.getRecord(rid);
+    this.stats.removeRecord(removedRecord);
+    this.numRecords--;
+
+    return removedRecord;
   }
+
 
   /**
    * Retrieves a record from the table.
@@ -182,8 +237,23 @@ public class Table implements Iterable<Record>, Closeable {
    * @throws DatabaseException if rid does not correspond to a valid record
    */
   public Record getRecord(RecordID rid) throws DatabaseException {
-    // TODO: implement me!
-    return null;
+    if (!this.checkRecordIDValidity(rid)) {
+      throw new DatabaseException("Error: Record ID does not correspond to a valid record. ");
+    }
+
+    Page page;
+    try {
+      page = this.allocator.fetchPage(rid.getPageNum());
+    } catch(PageException e) {
+      throw new DatabaseException("Error: Page number invalid. " + e);
+    }
+
+    int recordSize = this.schema.getSize();
+    int position = this.pageHeaderSize + (recordSize * rid.getEntryNumber());
+
+    byte[] serializedRecord = page.readBytes(position, recordSize);
+    Record record = this.schema.decode(serializedRecord); // generate record
+    return record;
   }
 
   /**
@@ -197,8 +267,29 @@ public class Table implements Iterable<Record>, Closeable {
    *         if the values do not correspond to the schema of this table
    */
   public Record updateRecord(List<DataBox> values, RecordID rid) throws DatabaseException {
-    // TODO: implement me!
-    return null;
+    Record newRecord;
+    try {
+      newRecord = this.schema.verify(values);
+    } catch (SchemaException e) {
+      throw new DatabaseException(e);
+    }
+
+    if (!this.checkRecordIDValidity(rid)) {
+      throw new DatabaseException("Error: Record ID is invalid.");
+    }
+
+    Page page = this.allocator.fetchPage(rid.getPageNum());
+    int recordSize = this.schema.getSize();
+    int byteOffset = this.pageHeaderSize + (rid.getEntryNumber() * recordSize);
+
+    Record oldRecord = this.getRecord(rid);
+    this.stats.removeRecord(oldRecord);
+    this.stats.addRecord(newRecord);
+
+    byte[] serializedRecord = this.schema.encode(newRecord);
+    page.writeBytes(byteOffset, recordSize, serializedRecord);
+
+    return oldRecord;
   }
 
   public int getNumEntriesPerPage() {
@@ -219,9 +310,37 @@ public class Table implements Iterable<Record>, Closeable {
    * @throws DatabaseException if rid does not reference an existing data page slot
    */
   private boolean checkRecordIDValidity(RecordID rid) throws DatabaseException {
-    Page page = this.allocator.fetchPage(rid.getPageNum());
+    Page page;
+
+    try {
+      page = this.allocator.fetchPage(rid.getPageNum());
+    } catch(PageException e) {
+      throw new DatabaseException("Error: Page number invalid. " + e);
+    }
+
+    return this.checkRecordIDValidity(rid, page);
+  }
+
+  /**
+   * addon helper function to overload without instantiating new page
+   */
+  private boolean checkRecordIDValidity(RecordID rid, Page page) {
     byte[] pageHeader = this.readPageHeader(page);
-    return pageHeader[rid.getEntryNumber()] == 1;
+//    System.out.println("Page number: " + page.getPageNum());
+
+//    System.out.println("Entry number: " + rid.getEntryNumber());
+
+    int headerByteNum = rid.getEntryNumber() / 8;
+//    System.out.println("Header byte Num: " + headerByteNum);
+    int headerByte = pageHeader[headerByteNum];
+//    System.out.println("Header byte bitstring: " + Integer.toBinaryString((byte)headerByte));
+    int bitIndex = rid.getEntryNumber() % 8;
+//    System.out.println("Bit Number: " + bitIndex);
+    int mask = 1 << (7 - bitIndex);
+//    System.out.println("Mask: " + Integer.toBinaryString((byte)mask));
+//    System.out.println("Post-Mask val: " + (byte)(headerByte & mask));
+    boolean returnValue = (byte)(headerByte & mask) != (byte)0;
+    return returnValue;
   }
 
   /**
@@ -234,9 +353,10 @@ public class Table implements Iterable<Record>, Closeable {
    * Should set this.pageHeaderSize and this.numEntriesPerPage.
    */
   private void setEntryCounts() {
-    int recordSizeInBits = this.schema.getSize() * 8;
-    this.numEntriesPerPage = (int)((Page.pageSize * 8.0) / (1.0 * recordSizeInBits + 1));
-    this.pageHeaderSize = (int)java.lang.Math.ceil(this.numEntriesPerPage / 8.0);
+    int recordSizeInBits = this.schema.getSize() * 8; // # of bits in a record
+    this.numEntriesPerPage = (int)((Page.pageSize * 8.0) / (1.0 * recordSizeInBits + 1.0));
+    this.numEntriesPerPage = this.numEntriesPerPage - (this.numEntriesPerPage % 8); // nearest multiple of 8
+    this.pageHeaderSize = (int)(this.numEntriesPerPage / 8);
   }
 
   /**
@@ -392,6 +512,52 @@ public class Table implements Iterable<Record>, Closeable {
     page.writeBytes(0, this.pageHeaderSize, header);
   }
 
+  // addon
+  /**
+   * Utility method to return index of first empty record
+   * @param header the bit header of the page
+   * @return the index of the first empty record
+   * */
+  private int getEmptyRecordIndex(byte[] header) throws DatabaseException {
+    int i = 0;
+    for (i = 0; i < header.length; i++) {
+      if (header[i] != (byte)0xFF) {
+        break;
+      }
+    }
+
+    if (i == header.length) {
+      throw new DatabaseException("Error: Record header indicates that page is full.");
+    }
+
+    byte pageByte = header[i];
+    int  mask = 1 << 7;
+
+    int j;
+    for (j = 0; j < 8; j++) {
+      if ((byte)(pageByte & mask) == (byte)0) {
+        return 8 * i + j;
+      }
+      mask = mask >>> 1;
+    }
+
+    System.out.println("Error!!!!!!! Returning -1");
+    return -1; // should never be returned
+  }
+
+  /**
+   * helper function to return record at a given index within a page.
+   * @param index the index of the record to be retrieved
+   * @param page the page to retrieve from
+   * @return new, deserialized record at given index.
+   */
+  public Record getRecordForIndex(int index, Page page) {
+    int bytePosition = this.pageHeaderSize + (index * this.schema.getSize());
+    byte[] serializedRecord = page.readBytes(bytePosition, this.schema.getEntrySize());
+    Record record = this.schema.decode(serializedRecord);
+    return record;
+  }
+
   /**
    * Read the slot header of a page.
    *
@@ -407,9 +573,21 @@ public class Table implements Iterable<Record>, Closeable {
    * of the records in this table.
    */
   private class TableIterator implements Iterator<Record> {
+    private int recordNum;
+    private int cursor; // record index within a page
+    private Iterator<Page> pageIterator;
+    private Page currentPage;
 
     public TableIterator() {
-      // TODO: implement me!
+      this.recordNum = 0; // global valid record count
+      this.cursor = 0; // record entry index
+      this.pageIterator = Table.this.allocator.iterator();
+      if (this.hasNext()) {
+        this.currentPage = this.pageIterator.next(); // don't use header page
+      }
+      if (this.hasNext()) {
+        this.currentPage = this.pageIterator.next(); // don't use header page
+      }
     }
 
     /**
@@ -418,8 +596,8 @@ public class Table implements Iterable<Record>, Closeable {
      * @return true if this iterator has another record to yield, otherwise false
      */
     public boolean hasNext() {
-      // TODO: implement me!
-      return false;
+//      System.out.println("Record Num: " + this.recordNum + ", Number of records: " + Table.this.numRecords);
+      return this.recordNum < Table.this.numRecords;
     }
 
     /**
@@ -429,8 +607,30 @@ public class Table implements Iterable<Record>, Closeable {
      * @throws NoSuchElementException if there are no more Records to yield
      */
     public Record next() {
-      // TODO: implement me!
-      return null;
+      if (this.hasNext()) {
+        while (true) {
+          if (this.cursor >= Table.this.numEntriesPerPage) { // if at end of page, get next page
+//            System.out.println("Reached end of page. Opening next page.");
+            this.currentPage = this.pageIterator.next();
+            this.cursor = 0;
+          }
+
+          RecordID rid = new RecordID(this.currentPage.getPageNum(), this.cursor);
+          if (Table.this.checkRecordIDValidity(rid, currentPage)) { // overloaded addon function
+//            System.out.println("Found valid record at slot " + cursor + " of page " + currentPage.getPageNum());
+            Record nextRecord = Table.this.getRecordForIndex(this.cursor, this.currentPage);
+            this.cursor++;
+            this.recordNum++;
+            return nextRecord;
+          }
+          else {
+//            System.out.println("Record ID provided references an empty record slot. Incrementing...");
+            this.cursor++;
+          }
+        }
+      }
+
+      throw new NoSuchElementException();
     }
 
     public void remove() {

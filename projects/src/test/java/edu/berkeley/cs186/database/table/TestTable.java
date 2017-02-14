@@ -97,6 +97,16 @@ public class TestTable {
 
     Record output = table.getRecord(rid);
     assertEquals(input, output);
+
+    // addon
+    rid = table.addRecord(input.getValues());
+
+    // This is a new table, so it should be put into the first slot of the first page.
+    assertEquals(1, rid.getPageNum());
+    assertEquals(1, rid.getEntryNumber());
+
+    output = table.getRecord(rid);
+    assertEquals(input, output);
   }
 
   @Test
@@ -144,7 +154,8 @@ public class TestTable {
     Iterator<Record> iRec = table.iterator();
     for (int i = 0; i < 1000; i++) {
       assertTrue(iRec.hasNext());
-      assertEquals(input, iRec.next());
+      Record next = iRec.next();
+      assertEquals(input, next);
     }
     assertFalse(iRec.hasNext());
   }
@@ -210,6 +221,7 @@ public class TestTable {
     }
     assertFalse(iRec.hasNext());
   }
+
 
   @Test
   public void testTableDurable() throws Exception {
