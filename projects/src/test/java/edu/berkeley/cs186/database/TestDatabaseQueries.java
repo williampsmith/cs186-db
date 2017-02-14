@@ -76,6 +76,7 @@ public class TestDatabaseQueries {
     assertEquals(1000, count);
   }
 
+
   private static void createSchemas() throws DatabaseException {
     List<String> studentSchemaNames = new ArrayList<String>();
     studentSchemaNames.add("sid");
