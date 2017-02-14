@@ -595,10 +595,7 @@ public class Table implements Iterable<Record>, Closeable {
      *
      * @return true if this iterator has another record to yield, otherwise false
      */
-    public boolean hasNext() {
-//      System.out.println("Record Num: " + this.recordNum + ", Number of records: " + Table.this.numRecords);
-      return this.recordNum < Table.this.numRecords;
-    }
+    public boolean hasNext() { return this.recordNum < Table.this.numRecords; }
 
     /**
      * Yields the next record of this iterator.
@@ -610,21 +607,18 @@ public class Table implements Iterable<Record>, Closeable {
       if (this.hasNext()) {
         while (true) {
           if (this.cursor >= Table.this.numEntriesPerPage) { // if at end of page, get next page
-//            System.out.println("Reached end of page. Opening next page.");
             this.currentPage = this.pageIterator.next();
             this.cursor = 0;
           }
 
           RecordID rid = new RecordID(this.currentPage.getPageNum(), this.cursor);
           if (Table.this.checkRecordIDValidity(rid, currentPage)) { // overloaded addon function
-//            System.out.println("Found valid record at slot " + cursor + " of page " + currentPage.getPageNum());
             Record nextRecord = Table.this.getRecordForIndex(this.cursor, this.currentPage);
             this.cursor++;
             this.recordNum++;
             return nextRecord;
           }
           else {
-//            System.out.println("Record ID provided references an empty record slot. Incrementing...");
             this.cursor++;
           }
         }
@@ -636,5 +630,8 @@ public class Table implements Iterable<Record>, Closeable {
     public void remove() {
       throw new UnsupportedOperationException();
     }
+
   }
+
+  public int getFreePages () { return this.freePages.size(); }
 }

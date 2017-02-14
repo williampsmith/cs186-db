@@ -1,9 +1,11 @@
 package edu.berkeley.cs186.database.query;
 
+import edu.berkeley.cs186.database.StudentTest;
 import edu.berkeley.cs186.database.databox.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Rule;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;

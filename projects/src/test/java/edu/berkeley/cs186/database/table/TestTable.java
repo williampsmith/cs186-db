@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
@@ -403,4 +404,132 @@ public class TestTable {
     assertFalse(iRec.hasNext());
   }
 
+  /**
+   ***************************************
+   * Beginning of student added test cases
+   ***************************************
+   */
+
+  @Test(expected = DatabaseException.class)
+  @Category(StudentTest.class)
+  public void testEmptyAccess() throws DatabaseException {
+
+    Record input = TestUtils.createRecordWithAllTypesWithValue(10);
+    RecordID rid = table.addRecord(input.getValues());
+    Record returned = table.deleteRecord(rid);
+
+    assertEquals(input, returned);
+    Record returnRecord = table.getRecord(rid); // should throw DatabaseException
+  }
+
+
+  @Test
+  @Category(StudentTest.class)
+  public void testStaggeredUpdate() throws DatabaseException {
+    Record input = TestUtils.createRecordWithAllTypesWithValue(100);
+    Record change = TestUtils.createRecordWithAllTypesWithValue(200);
+    RecordID[] recordIds = new RecordID[1000];
+
+    for (int i = 0; i < 1000; i++) {
+      recordIds[i] = table.addRecord(input.getValues());
+    }
+
+    for (int i = 0; i < 1000; i+=2) {
+      table.updateRecord(change.getValues(), recordIds[i]);
+    }
+
+    for (int i = 0; i < 1000; i++) {
+      Record currentRecord = table.getRecord(recordIds[i]);
+
+      if (i % 2 == 0) {
+        assertEquals(currentRecord, change);
+      } else {
+        assertEquals(currentRecord, input);
+      }
+    }
+  }
+
+  @Test
+  @Category(StudentTest.class)
+  public void testPageDecrement() throws DatabaseException {
+    int numEntriesPerPage = table.getNumEntriesPerPage();
+    Record input = TestUtils.createRecordWithAllTypesWithValue(100);
+    RecordID[][] recordIDs = new RecordID[3][numEntriesPerPage];
+
+    // create 3 pages filled with identical records
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < numEntriesPerPage; j++) {
+        recordIDs[i][j] = table.addRecord(input.getValues());
+      }
+    }
+
+    Record currentRecord;
+
+    for (int i = 0; i < 3; i++) {
+      assertEquals(table.getFreePages(), i);
+      for (int j = 0; j < numEntriesPerPage; j++) {
+        currentRecord = table.deleteRecord(recordIDs[i][j]);
+      }
+    }
+
+    assertEquals(table.getFreePages(), 3);
+  }
+
+  @Test
+  @Category(StudentTest.class)
+  public void testPageSkipping() throws DatabaseException {
+    int numEntriesPerPage = table.getNumEntriesPerPage();
+    Record firstPageRecords = TestUtils.createRecordWithAllTypesWithValue(100);
+    Record secondPageRecords = TestUtils.createRecordWithAllTypesWithValue(200);
+    Record thirdPageRecords = TestUtils.createRecordWithAllTypesWithValue(300);
+
+    Record[] records = new Record[]{firstPageRecords, secondPageRecords, thirdPageRecords};
+    RecordID[][] recordIDs = new RecordID[3][numEntriesPerPage];
+
+    // create 3 pages filled with identical records
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < numEntriesPerPage; j++) {
+        recordIDs[i][j] = table.addRecord(records[i].getValues());
+      }
+    }
+
+    Record currentRecord;
+
+    for (int j = 0; j < numEntriesPerPage; j++) {
+      currentRecord = table.deleteRecord(recordIDs[1][j]); // delete entries from second page (page 1)
+    }
+
+    assertEquals(table.getFreePages(), 1);
+    Iterator<Record> tableIterator = table.iterator();
+
+    for (int j = 0; j < numEntriesPerPage; j++) {
+      currentRecord = tableIterator.next();
+      assertEquals(currentRecord.getValues(), records[0].getValues());
+    }
+
+    for (int j = 0; j < numEntriesPerPage; j++) {
+      currentRecord = tableIterator.next();
+      assertEquals(currentRecord.getValues(), records[2].getValues());
+    }
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  @Category(StudentTest.class)
+  public void testNullIterator() throws DatabaseException {
+    Iterator<Record> nullIterator = table.iterator();
+    Record failedRecord = nullIterator.next();
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  @Category(StudentTest.class)
+  public void testEmptyPageNullIterator() throws DatabaseException {
+    Iterator<Record> nullIterator = table.iterator();
+    Record newRecord = TestUtils.createRecordWithAllTypes();
+
+    //create one empty page
+    RecordID newRecordID = table.addRecord(newRecord.getValues());
+    newRecord = table.deleteRecord(newRecordID);
+
+    Record failedRecord = nullIterator.next();
+  }
 }

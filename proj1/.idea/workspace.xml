@@ -22,53 +22,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Record.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Record.java">
+      <file leaf-file-name="TestSchema.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/table/TestSchema.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="29" column="5" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="5" />
+              <caret line="94" column="48" selection-start-line="94" selection-start-column="48" selection-end-line="94" selection-end-column="48" />
               <folding>
                 <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RecordID.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/RecordID.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="15" column="33" selection-start-line="15" selection-start-column="33" selection-end-line="15" selection-end-column="33" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PageAllocator.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/io/PageAllocator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="341" column="17" selection-start-line="341" selection-start-column="9" selection-end-line="341" selection-end-column="17" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#freePage#1;class#PageAllocator#0" expanded="false" />
-                <element signature="method#getHeadPage#0;class#PageAllocator#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RecordIterator.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/RecordIterator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="33" column="3" selection-start-line="33" selection-start-column="3" selection-end-line="33" selection-end-column="3" />
-              <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#563#564#0" expanded="false" />
-                <element signature="e#602#603#0" expanded="false" />
-                <element signature="e#880#881#0" expanded="false" />
-                <element signature="e#931#932#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -78,7 +38,7 @@
         <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Table.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="223" column="39" selection-start-line="223" selection-start-column="39" selection-end-line="223" selection-end-column="39" />
+              <caret line="156" column="27" selection-start-line="156" selection-start-column="18" selection-end-line="156" selection-end-column="27" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -86,21 +46,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestTable.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TestTable.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/table/TestTable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="46" column="69" selection-start-line="46" selection-start-column="69" selection-end-line="46" selection-end-column="69" />
+            <state vertical-scroll-proportion="0.44871795">
+              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="QueryPlanTest.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/query/QueryPlanTest.java">
+      <file leaf-file-name="TestUtils.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/TestUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.3508288">
-              <caret line="554" column="0" selection-start-line="554" selection-start-column="0" selection-end-line="554" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -110,10 +70,8 @@
         <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Schema.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="76" column="39" selection-start-line="76" selection-start-column="39" selection-end-line="76" selection-end-column="39" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -131,10 +89,11 @@
         <option value="$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/databox/StringDataBox.java" />
         <option value="$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Record.java" />
         <option value="$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/io/PageAllocator.java" />
-        <option value="$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Table.java" />
-        <option value="$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/table/TestTable.java" />
-        <option value="$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Schema.java" />
         <option value="$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/query/QueryPlanTest.java" />
+        <option value="$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Table.java" />
+        <option value="$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Schema.java" />
+        <option value="$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/table/TestSchema.java" />
+        <option value="$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/table/TestTable.java" />
       </list>
     </option>
   </component>
@@ -289,6 +248,36 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="database" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="table" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="proj1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="projects" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -374,20 +363,20 @@
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
-  <component name="RunManager" selected="JUnit.TestTable.testHasNext">
-    <configuration default="false" name="QueryPlanTest.testEmptyJoinResult" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.TestTable.testEmptyPageNullIterator">
+    <configuration default="false" name="TestSchema.testLongFieldLength" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="edu.berkeley.cs186.database.query.*" />
+          <option name="PATTERN" value="edu.berkeley.cs186.database.table.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
       <module name="database" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.query" />
-      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.query.QueryPlanTest" />
-      <option name="METHOD_NAME" value="testEmptyJoinResult" />
+      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.table" />
+      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.table.TestSchema" />
+      <option name="METHOD_NAME" value="testLongFieldLength" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -401,19 +390,19 @@
       <patterns />
       <method />
     </configuration>
-    <configuration default="false" name="QueryPlanTest.testSelectGroupByWithAggregates" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration default="false" name="TestSchema.testCorrectFields" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="edu.berkeley.cs186.database.query.*" />
+          <option name="PATTERN" value="edu.berkeley.cs186.database.table.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
       <module name="database" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.query" />
-      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.query.QueryPlanTest" />
-      <option name="METHOD_NAME" value="testSelectGroupByWithAggregates" />
+      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.table" />
+      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.table.TestSchema" />
+      <option name="METHOD_NAME" value="testCorrectFields" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -427,19 +416,19 @@
       <patterns />
       <method />
     </configuration>
-    <configuration default="false" name="QueryPlanTest.testSelectColumnNotInGroupBy" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration default="false" name="TestSchema.testPermutedFields" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
-          <option name="PATTERN" value="edu.berkeley.cs186.database.query.*" />
+          <option name="PATTERN" value="edu.berkeley.cs186.database.table.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
       <module name="database" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.query" />
-      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.query.QueryPlanTest" />
-      <option name="METHOD_NAME" value="testSelectColumnNotInGroupBy" />
+      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.table" />
+      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.table.TestSchema" />
+      <option name="METHOD_NAME" value="testPermutedFields" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -453,33 +442,7 @@
       <patterns />
       <method />
     </configuration>
-    <configuration default="false" name="QueryPlanTest.testQueryAsWithJoin" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="edu.berkeley.cs186.database.query.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="database" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.query" />
-      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.query.QueryPlanTest" />
-      <option name="METHOD_NAME" value="testQueryAsWithJoin" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <method />
-    </configuration>
-    <configuration default="false" name="TestTable.testHasNext" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration default="false" name="TestTable.testNullIterator" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
           <option name="PATTERN" value="edu.berkeley.cs186.database.table.*" />
@@ -491,7 +454,33 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.table" />
       <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.table.TestTable" />
-      <option name="METHOD_NAME" value="testHasNext" />
+      <option name="METHOD_NAME" value="testNullIterator" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="false" name="TestTable.testEmptyPageNullIterator" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="edu.berkeley.cs186.database.table.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="database" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.table" />
+      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.table.TestTable" />
+      <option name="METHOD_NAME" value="testEmptyPageNullIterator" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -830,19 +819,19 @@
     </configuration>
     <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Remote.Proj1DebugConfig" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.QueryPlanTest.testEmptyJoinResult" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.QueryPlanTest.testSelectGroupByWithAggregates" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.QueryPlanTest.testSelectColumnNotInGroupBy" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.QueryPlanTest.testQueryAsWithJoin" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.TestTable.testHasNext" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.TestSchema.testLongFieldLength" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.TestSchema.testCorrectFields" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.TestSchema.testPermutedFields" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.TestTable.testNullIterator" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.TestTable.testEmptyPageNullIterator" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.TestTable.testHasNext" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.QueryPlanTest.testEmptyJoinResult" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.QueryPlanTest.testQueryAsWithJoin" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.QueryPlanTest.testSelectColumnNotInGroupBy" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.QueryPlanTest.testSelectGroupByWithAggregates" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.TestTable.testEmptyPageNullIterator" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.TestTable.testNullIterator" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.TestSchema.testPermutedFields" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.TestSchema.testCorrectFields" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.TestSchema.testLongFieldLength" />
       </list>
     </recent_temporary>
   </component>
@@ -865,35 +854,35 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="QueryPlanTest_testEmptyJoinResult - 2017.02.10 at 20h 57m 08s.xml">
-      <configuration name="QueryPlanTest.testEmptyJoinResult" configurationId="JUnit" />
+    <history-entry file="TestSchema_testCorrectFields - 2017.02.14 at 00h 26m 23s.xml">
+      <configuration name="TestSchema.testCorrectFields" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="QueryPlanTest_testEmptyJoinResult - 2017.02.10 at 21h 23m 29s.xml">
-      <configuration name="QueryPlanTest.testEmptyJoinResult" configurationId="JUnit" />
+    <history-entry file="TestSchema_testCorrectFields - 2017.02.14 at 00h 26m 47s.xml">
+      <configuration name="TestSchema.testCorrectFields" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="QueryPlanTest_testEmptyWhereResult - 2017.02.10 at 20h 55m 45s.xml">
-      <configuration name="QueryPlanTest.testEmptyWhereResult" configurationId="JUnit" />
+    <history-entry file="TestSchema_testCorrectFields - 2017.02.14 at 00h 28m 02s.xml">
+      <configuration name="TestSchema.testCorrectFields" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="QueryPlanTest_testQueryAsWithJoin - 2017.02.10 at 20h 57m 00s.xml">
-      <configuration name="QueryPlanTest.testQueryAsWithJoin" configurationId="JUnit" />
+    <history-entry file="TestSchema_testCorrectFields - 2017.02.14 at 00h 28m 13s.xml">
+      <configuration name="TestSchema.testCorrectFields" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="QueryPlanTest_testSelectColumnNotInGroupBy - 2017.02.10 at 20h 56m 55s.xml">
-      <configuration name="QueryPlanTest.testSelectColumnNotInGroupBy" configurationId="JUnit" />
+    <history-entry file="TestSchema_testLongFieldLength - 2017.02.14 at 00h 27m 58s.xml">
+      <configuration name="TestSchema.testLongFieldLength" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="QueryPlanTest_testSelectGroupByWithAggregates - 2017.02.10 at 20h 56m 47s.xml">
-      <configuration name="QueryPlanTest.testSelectGroupByWithAggregates" configurationId="JUnit" />
+    <history-entry file="TestSchema_testPermutedFields - 2017.02.14 at 00h 29m 24s.xml">
+      <configuration name="TestSchema.testPermutedFields" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="QueryPlanTest_testSelectWhereGroupBy - 2017.02.10 at 20h 55m 33s.xml">
-      <configuration name="QueryPlanTest.testSelectWhereGroupBy" configurationId="JUnit" />
+    <history-entry file="TestSchema_testShortFieldLength - 2017.02.14 at 00h 25m 37s.xml">
+      <configuration name="TestSchema.testShortFieldLength" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="QueryPlanTest_testSelectWhereGroupByJoin - 2017.02.10 at 20h 55m 40s.xml">
-      <configuration name="QueryPlanTest.testSelectWhereGroupByJoin" configurationId="JUnit" />
+    <history-entry file="TestSchema_testShortFieldLength - 2017.02.14 at 00h 27m 54s.xml">
+      <configuration name="TestSchema.testShortFieldLength" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestTable_testHasNext - 2017.02.10 at 23h 40m 15s.xml">
-      <configuration name="TestTable.testHasNext" configurationId="JUnit" />
+    <history-entry file="TestTable_testEmptyPageNullIterator - 2017.02.14 at 00h 40m 16s.xml">
+      <configuration name="TestTable.testEmptyPageNullIterator" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestTable_testHasNext - 2017.02.12 at 20h 16m 40s.xml">
-      <configuration name="TestTable.testHasNext" configurationId="JUnit" />
+    <history-entry file="TestTable_testNullIterator - 2017.02.14 at 00h 32m 14s.xml">
+      <configuration name="TestTable.testNullIterator" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TodoView">
@@ -907,30 +896,30 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14216478" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.46575344" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29041097" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.6410959" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17528272" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5972603" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.43150684" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0890411" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5972603" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -960,24 +949,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Record.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/RecordID.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="15" column="33" selection-start-line="15" selection-start-column="33" selection-end-line="15" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/io/PageAllocator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -986,6 +957,8 @@
             <element signature="imports" expanded="true" />
             <element signature="method#freePage#1;class#PageAllocator#0" expanded="false" />
             <element signature="method#getHeadPage#0;class#PageAllocator#0" expanded="false" />
+            <element signature="e#9554#9555#0" expanded="true" />
+            <element signature="e#9591#9592#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -994,13 +967,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="33" column="3" selection-start-line="33" selection-start-column="3" selection-end-line="33" selection-end-column="3" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#563#564#0" expanded="false" />
-            <element signature="e#602#603#0" expanded="false" />
-            <element signature="e#880#881#0" expanded="false" />
-            <element signature="e#931#932#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1028,7 +995,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="33" selection-start-line="15" selection-start-column="33" selection-end-line="15" selection-end-column="33" />
-          <folding />
+          <folding>
+            <element signature="e#618#619#0" expanded="true" />
+            <element signature="e#647#648#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1040,6 +1010,8 @@
             <element signature="imports" expanded="true" />
             <element signature="method#freePage#1;class#PageAllocator#0" expanded="false" />
             <element signature="method#getHeadPage#0;class#PageAllocator#0" expanded="false" />
+            <element signature="e#9554#9555#0" expanded="true" />
+            <element signature="e#9591#9592#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1074,9 +1046,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="61" column="30" selection-start-line="61" selection-start-column="30" selection-end-line="61" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1111,9 +1081,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1156,7 +1124,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="54" column="29" selection-start-line="54" selection-start-column="26" selection-end-line="54" selection-end-column="29" />
-          <folding />
+          <folding>
+            <element signature="e#618#619#0" expanded="true" />
+            <element signature="e#647#648#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1199,7 +1170,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="54" column="29" selection-start-line="54" selection-start-column="26" selection-end-line="54" selection-end-column="29" />
-          <folding />
+          <folding>
+            <element signature="e#618#619#0" expanded="true" />
+            <element signature="e#647#648#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1215,9 +1189,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1269,13 +1241,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/table/TestSchema.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="3" selection-start-line="37" selection-start-column="3" selection-end-line="37" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/databox/DataBox.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.34210527">
@@ -1310,14 +1275,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/TestUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.4424778">
-          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/junit/junit/4.12/junit-4.12.jar!/org/junit/internal/runners/model/ReflectiveCallable.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-7.7777777">
@@ -1340,10 +1297,77 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/StudentTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.21428572">
+          <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/io/PageAllocator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.05102041">
+          <caret line="341" column="17" selection-start-line="341" selection-start-column="9" selection-end-line="341" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#freePage#1;class#PageAllocator#0" expanded="false" />
+            <element signature="method#getHeadPage#0;class#PageAllocator#0" expanded="false" />
+            <element signature="e#9554#9555#0" expanded="true" />
+            <element signature="e#9591#9592#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/RecordID.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.1632653">
+          <caret line="34" column="79" selection-start-line="34" selection-start-column="79" selection-end-line="34" selection-end-column="79" />
+          <folding>
+            <element signature="e#618#619#0" expanded="true" />
+            <element signature="e#647#648#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Record.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.4693878">
+          <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/RecordIterator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.85714287">
+          <caret line="33" column="3" selection-start-line="33" selection-start-column="3" selection-end-line="33" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/StudentTestSuite.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.78571427">
+          <caret line="45" column="13" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/query/QueryPlanTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.0">
+          <caret line="555" column="3" selection-start-line="555" selection-start-column="3" selection-end-line="555" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/table/TestSchema.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="5" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="5" />
+          <caret line="94" column="48" selection-start-line="94" selection-start-column="48" selection-end-line="94" selection-end-column="48" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1353,51 +1377,23 @@
     <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Schema.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="76" column="39" selection-start-line="76" selection-start-column="39" selection-end-line="76" selection-end-column="39" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/RecordID.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="15" column="33" selection-start-line="15" selection-start-column="33" selection-end-line="15" selection-end-column="33" />
+          <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/io/PageAllocator.java">
+    <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/TestUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="341" column="17" selection-start-line="341" selection-start-column="9" selection-end-line="341" selection-end-column="17" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#freePage#1;class#PageAllocator#0" expanded="false" />
-            <element signature="method#getHeadPage#0;class#PageAllocator#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/RecordIterator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="33" column="3" selection-start-line="33" selection-start-column="3" selection-end-line="33" selection-end-column="3" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#563#564#0" expanded="false" />
-            <element signature="e#602#603#0" expanded="false" />
-            <element signature="e#880#881#0" expanded="false" />
-            <element signature="e#931#932#0" expanded="false" />
-          </folding>
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../projects/src/main/java/edu/berkeley/cs186/database/table/Table.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="223" column="39" selection-start-line="223" selection-start-column="39" selection-end-line="223" selection-end-column="39" />
+          <caret line="156" column="27" selection-start-line="156" selection-start-column="18" selection-end-line="156" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1406,16 +1402,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/table/TestTable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="46" column="69" selection-start-line="46" selection-start-column="69" selection-end-line="46" selection-end-column="69" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/query/QueryPlanTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.3508288">
-          <caret line="554" column="0" selection-start-line="554" selection-start-column="0" selection-end-line="554" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.44871795">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding />
         </state>
       </provider>
