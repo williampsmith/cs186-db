@@ -520,6 +520,36 @@ public class TestTable {
     Record failedRecord = nullIterator.next();
   }
 
+
+
+  @Test
+  @Category(StudentTest.class)
+  public void testFirstPageIterator() throws DatabaseException {
+    int numEntriesPerPage = table.getNumEntriesPerPage();
+    Record currentRecord = TestUtils.createRecordWithAllTypesWithValue(100);
+    RecordID[] recordIDs = new RecordID[numEntriesPerPage + 2];
+
+
+    // create full page
+    for (int j = 0; j < numEntriesPerPage; j++) {
+      recordIDs[j] = table.addRecord(currentRecord.getValues());
+    }
+
+    //insert one more record, onto the next page
+    recordIDs[numEntriesPerPage] = table.addRecord(currentRecord.getValues());
+
+
+    // delete all entries from first page
+    for (int j = 0; j < numEntriesPerPage; j++) {
+      currentRecord = table.deleteRecord(recordIDs[j]); // delete entries from second page (page 1)
+    }
+
+    //insert one final record, should be on first page after header page
+    recordIDs[numEntriesPerPage + 1] = table.addRecord(currentRecord.getValues());
+    assertEquals(recordIDs[numEntriesPerPage + 1].getPageNum(), 1);
+  }
+
+
   @Test(expected = NoSuchElementException.class)
   @Category(StudentTest.class)
   public void testEmptyPageNullIterator() throws DatabaseException {

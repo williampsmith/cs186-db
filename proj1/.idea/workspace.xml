@@ -49,8 +49,8 @@
       <file leaf-file-name="TestTable.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/table/TestTable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5256917">
-              <caret line="525" column="29" selection-start-line="525" selection-start-column="29" selection-end-line="525" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.6263048">
+              <caret line="546" column="72" selection-start-line="546" selection-start-column="72" selection-end-line="546" selection-end-column="72" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -406,33 +406,7 @@
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
-  <component name="RunManager" selected="JUnit.TestTable.testEmptyPageNullIterator">
-    <configuration default="false" name="TestSchema.testLongFieldLength" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="edu.berkeley.cs186.database.table.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="database" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.table" />
-      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.table.TestSchema" />
-      <option name="METHOD_NAME" value="testLongFieldLength" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="JUnit.TestTable.testFirstPageIterator">
     <configuration default="false" name="TestSchema.testCorrectFields" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -524,6 +498,32 @@
       <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.table" />
       <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.table.TestTable" />
       <option name="METHOD_NAME" value="testEmptyPageNullIterator" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="false" name="TestTable.testFirstPageIterator" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="edu.berkeley.cs186.database.table.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="database" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="edu.berkeley.cs186.database.table" />
+      <option name="MAIN_CLASS_NAME" value="edu.berkeley.cs186.database.table.TestTable" />
+      <option name="METHOD_NAME" value="testFirstPageIterator" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -862,19 +862,19 @@
     </configuration>
     <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Remote.Proj1DebugConfig" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.TestSchema.testLongFieldLength" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.TestSchema.testCorrectFields" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.TestSchema.testPermutedFields" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.TestTable.testNullIterator" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.TestTable.testEmptyPageNullIterator" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.TestSchema.testCorrectFields" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.TestSchema.testPermutedFields" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.TestTable.testNullIterator" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.TestTable.testEmptyPageNullIterator" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.TestTable.testFirstPageIterator" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.TestTable.testEmptyPageNullIterator" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.TestTable.testNullIterator" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.TestSchema.testPermutedFields" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.TestSchema.testCorrectFields" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.TestSchema.testLongFieldLength" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.TestTable.testFirstPageIterator" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.TestTable.testEmptyPageNullIterator" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.TestTable.testNullIterator" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.TestSchema.testPermutedFields" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.TestSchema.testCorrectFields" />
       </list>
     </recent_temporary>
   </component>
@@ -897,12 +897,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestSchema_testCorrectFields - 2017.02.14 at 00h 26m 23s.xml">
-      <configuration name="TestSchema.testCorrectFields" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestSchema_testCorrectFields - 2017.02.14 at 00h 26m 47s.xml">
-      <configuration name="TestSchema.testCorrectFields" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="TestSchema_testCorrectFields - 2017.02.14 at 00h 28m 02s.xml">
       <configuration name="TestSchema.testCorrectFields" configurationId="JUnit" />
     </history-entry>
@@ -924,6 +918,12 @@
     <history-entry file="TestTable_testEmptyPageNullIterator - 2017.02.14 at 00h 40m 16s.xml">
       <configuration name="TestTable.testEmptyPageNullIterator" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="TestTable_testFirstPageIterator - 2017.02.14 at 17h 53m 03s.xml">
+      <configuration name="TestTable.testFirstPageIterator" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestTable_testFirstPageIterator - 2017.02.14 at 17h 53m 38s.xml">
+      <configuration name="TestTable.testFirstPageIterator" configurationId="JUnit" />
+    </history-entry>
     <history-entry file="TestTable_testNullIterator - 2017.02.14 at 00h 32m 14s.xml">
       <configuration name="TestTable.testNullIterator" configurationId="JUnit" />
     </history-entry>
@@ -939,30 +939,30 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14216478" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26849315" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32328767" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26849315" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17528272" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5972603" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29041097" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0890411" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5972603" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -1440,8 +1440,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../projects/src/test/java/edu/berkeley/cs186/database/table/TestTable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5256917">
-          <caret line="525" column="29" selection-start-line="525" selection-start-column="29" selection-end-line="525" selection-end-column="29" />
+        <state vertical-scroll-proportion="0.6263048">
+          <caret line="546" column="72" selection-start-line="546" selection-start-column="72" selection-end-line="546" selection-end-column="72" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
