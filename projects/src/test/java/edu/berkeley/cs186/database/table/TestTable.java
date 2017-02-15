@@ -553,13 +553,13 @@ public class TestTable {
   @Test(expected = NoSuchElementException.class)
   @Category(StudentTest.class)
   public void testEmptyPageNullIterator() throws DatabaseException {
-    Iterator<Record> nullIterator = table.iterator();
+    Iterator<Record> nullIter = table.iterator();
     Record newRecord = TestUtils.createRecordWithAllTypes();
 
     //create one empty page
     RecordID newRecordID = table.addRecord(newRecord.getValues());
     newRecord = table.deleteRecord(newRecordID);
 
-    Record failedRecord = nullIterator.next();
+    Record failedRecord = nullIter.next();
   }
 }
