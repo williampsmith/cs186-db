@@ -85,7 +85,7 @@ time looking through it before starting to write your own code. The [Project 1
 spec](Project1Spec.md#package-overview) contains descriptions for each package
 of the codebase, but the relevant parts for this project are all in the `index`
 package. Briefly, it consists of a `BPlusTree` class that comprises of
-`BPlusNode`s, which `InnerNode`s and `LeafNodes` subclass from. Finally, each
+`BPlusNode`s, which `InnerNode`s and `LeafNode`s subclass from. Finally, each
 node contains entries. Read over all the classes in the `index` package.
 
 All of the starter code descriptions from Project 1 are still valid. We have
