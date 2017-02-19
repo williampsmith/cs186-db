@@ -225,6 +225,12 @@ the JavaDocs inline with the code.
   gives you a simple set of statistics for each table (`numRecords`,
   `Histogram`'s, etc.). **You don't need to concern yourself with this package
   right now, but it'll be integral to later projects.**
+* The `index` package provides you the a B+ tree implementation. A `BPlusTree`
+  comprises of `BPlusNodes`, which are either `InnerNodes` or `LeafNodes`.
+  Nodes contain entries, respectively `BEntry`, `InnerEntry`, and `LeafEntry`.
+  If a superclass has a method that is not implemented, that is a sign to
+  implement it at the subclass (e.g. `InnerNode` and `LeafNode` instead of
+  `BNode`).
 * The `query` package provides you a query processing implementation and query
   generation interface. The `QueryOperator` provides an interface for a bunch
   of different operators. In later projects, you will be extending this to
@@ -324,11 +330,11 @@ Once you've finished `Schema`, you should start by implementing
 `Table#addRecord` to add a new `Record` to the table.
 
 However, even before implementing `addRecord`, you'll have to do some
-arithmetic in `Table#setEntryCounts` to figure out exactly how many slots are
+arithmetic in `Table#setEntryCounts` to figure out exactly how many entries are
 on a page. Pages in our system are a fixed size `Page.pageSize`, which is
 currently set to 4KB. Since each record has a fixed size, you should be able to
 pretty easily figure out the optimal number of records that can be stored on a
-page. Make sure you account for the slot header (one bit (not byte) per
+page. Make sure you account for the entry header (one bit (not byte) per
 record!).
 
 We then suggest you implement `Table#checkRecordIDValidity` as it will be
@@ -386,6 +392,7 @@ functionality you're trying to test.
 All test methods you write should have both the `@Test` and
 `@Category(StudentTest.class)` annotations. We have included an example test in
 the `TestTable` class:
+
 ```
 @Test
 @Category(StudentTest.class)

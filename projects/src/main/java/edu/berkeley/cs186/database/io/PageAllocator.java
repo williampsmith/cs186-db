@@ -311,6 +311,10 @@ public class PageAllocator implements Iterable<Page>, Closeable {
     return new Page(this.fc, headBlockID, -1);
   }
 
+  public int getNumPages() {
+    return this.numPages;
+  }
+
   public static long getNumIOs() {
     return PageAllocator.numIOs.get();
   }
