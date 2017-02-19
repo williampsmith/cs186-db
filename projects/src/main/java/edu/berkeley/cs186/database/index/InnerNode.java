@@ -79,7 +79,7 @@ public class InnerNode extends BPlusNode {
      * Splits this InnerNode and returns the resulting InnerEntry to be
      * pushed/copied up to this InnerNode's parent as a result of the split.
      * The left node should contain d entries and the right node should contain
-     * d+1 entries.
+     * d entries.
      *
      * @param newEntry the BEntry that is being added to this InnerNode
      * @return the resulting InnerEntry to be pushed/copied up to this
