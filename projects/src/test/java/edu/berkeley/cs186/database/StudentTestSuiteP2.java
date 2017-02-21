@@ -27,7 +27,6 @@ import edu.berkeley.cs186.database.table.TestSchema;
         TestIntDataBox.class,
         TestStringDataBox.class,
         TestLargeBPlusTree.class,
-        TestSmallBPlusTree.class,
         TestLRUCache.class,
         TestPage.class,
         TestPageAllocator.class,
