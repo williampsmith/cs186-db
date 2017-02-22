@@ -21,6 +21,7 @@ public class LeafNode extends BPlusNode {
 
     public LeafNode(BPlusTree tree) {
         super(tree, true);
+        tree.incrementNumNodes();
         getPage().writeByte(0, (byte) 1);   // isLeaf = 1
     }
 
@@ -61,10 +62,6 @@ public class LeafNode extends BPlusNode {
      */
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
-        // Do not remove the following two lines.
-        BPlusTree tree = getTree();
-        tree.incrementNumNodes();
-
         // Implement me!
         return null;
     }

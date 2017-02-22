@@ -19,6 +19,7 @@ public class InnerNode extends BPlusNode {
 
     public InnerNode(BPlusTree tree) {
         super(tree, false);
+        tree.incrementNumNodes();
         getPage().writeByte(0, (byte) 0);   // isLeaf = 0
         setFirstChild(-1);
     }
@@ -87,10 +88,6 @@ public class InnerNode extends BPlusNode {
      */
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
-        // Do not remove the following two lines.
-        BPlusTree tree = getTree();
-        tree.incrementNumNodes();
-
         // Implement me!
         return null;
     }

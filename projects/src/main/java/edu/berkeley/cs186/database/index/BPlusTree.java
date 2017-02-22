@@ -49,8 +49,8 @@ public class BPlusTree {
         this.keySchema = keySchema;
         int headerPageNum = this.allocator.allocPage();
         assert(headerPageNum == 0);
+        this.numNodes = 0;
         BPlusNode root = new LeafNode(this);
-        this.numNodes = 1;
         this.rootPageNum = root.getPageNum();
         this.firstLeafPageNum = rootPageNum;
         writeHeader();
