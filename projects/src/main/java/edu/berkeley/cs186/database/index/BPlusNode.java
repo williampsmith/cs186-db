@@ -235,18 +235,4 @@ public abstract class BPlusNode {
     public InnerEntry insertBEntry(LeafEntry ent) {
         throw new BPlusTreeException("Not Implemented");
     }
-
-    /**
-     * Recursively locate the child that leads to the leaf node. If a key spans
-     * multiple pages and findFirst is true, this method returns the first leaf
-     * that contains the key. Otherwise, it returns the last leaf that contains
-     * the key.
-     *
-     * @param key the key to search for
-     * @param findFirst if true, returns the first leaf with the key
-     * @return the LeafNode found
-     */
-    public LeafNode locateLeaf(DataBox key, boolean findFirst) {
-        throw new BPlusTreeException("Not Implemented");
-    }
 }
