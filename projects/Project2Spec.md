@@ -152,7 +152,7 @@ All test methods you write should have both the `@Test` and
 `@Category(StudentTestP2.class)` annotations. Note that this is different from
 the `@Category(StudentTest.class)` annotation you used in Project 1! This is
 important in making sure that your Project 2 tests are not mixed up with your
-Project 1 tests. We have included an example test in the `TestSmallBPlusTree`
+Project 1 tests. We have included an example test in the `TestLargeBPlusTree`
 class:
 ```
 @Test

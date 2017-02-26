@@ -20,7 +20,7 @@ import edu.berkeley.cs186.database.table.TestSchema;
  * DO NOT CHANGE ANY OF THIS CODE.
  */
 @RunWith(Categories.class)
-@IncludeCategory(StudentTest.class)
+@IncludeCategory(StudentTestP2.class)
 @SuiteClasses({
         TestBoolDataBox.class,
         TestFloatDataBox.class,
