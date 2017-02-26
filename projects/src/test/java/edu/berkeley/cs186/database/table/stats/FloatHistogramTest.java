@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class FloatHistogramTest {
 
   @Test
-  public void testSimpleHistogram() {
+  public void testFloatSimpleHistogram() {
     FloatHistogram histogram = new FloatHistogram();
 
     // this will create a histogram from 0 -> 10
@@ -30,7 +30,7 @@ public class FloatHistogramTest {
   }
 
   @Test
-  public void testHistogramExpand() {
+  public void testFloatHistogramExpand() {
     FloatHistogram histogram = new FloatHistogram();
 
     // this will create a histogram from 0 -> 10

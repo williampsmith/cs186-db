@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 public class WhereOperatorTest {
 
   @Test
-  public void testOperatorSchema() throws QueryPlanException {
+  public void testWhereOperatorSchema() throws QueryPlanException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     WhereOperator whereOperator = new WhereOperator(sourceOperator, "int",
         QueryPlan.PredicateOperator.EQUALS, new IntDataBox(1));

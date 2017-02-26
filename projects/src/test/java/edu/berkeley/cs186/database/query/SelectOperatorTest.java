@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 public class SelectOperatorTest {
 
   @Test
-  public void testOperatorSchema() throws QueryPlanException {
+  public void testSelectOperatorSchema() throws QueryPlanException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     List<String> columnNames = new ArrayList<String>();
     columnNames.add("int");

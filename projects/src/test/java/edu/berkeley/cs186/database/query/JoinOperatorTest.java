@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 public class JoinOperatorTest {
 
   @Test
-  public void testOperatorSchema() throws QueryPlanException {
+  public void testJoinOperatorSchema() throws QueryPlanException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     JoinOperator joinOperator = new JoinOperator(sourceOperator, sourceOperator, "int", "int");
 

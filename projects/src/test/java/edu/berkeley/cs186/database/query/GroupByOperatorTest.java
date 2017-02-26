@@ -29,7 +29,7 @@ public class GroupByOperatorTest {
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Test
-  public void testOperatorSchema() throws QueryPlanException {
+  public void testGroupByOperatorSchema() throws QueryPlanException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     GroupByOperator groupByOperator = new GroupByOperator(sourceOperator, null, "int");
 
