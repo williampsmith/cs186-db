@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class IntHistogramTest {
 
   @Test
-  public void testSimpleHistogram() {
+  public void testIntSimpleHistogram() {
     IntHistogram histogram = new IntHistogram();
 
     // this will create a histogram from 0 -> 10
@@ -30,7 +30,7 @@ public class IntHistogramTest {
   }
 
   @Test
-  public void testHistogramExpand() {
+  public void testIntHistogramExpand() {
     IntHistogram histogram = new IntHistogram();
 
     // this will create a histogram from 0 -> 10

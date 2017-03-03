@@ -43,9 +43,9 @@ public class QueryPlanTest {
     this.database.createTable(TestUtils.createSchemaWithAllTypes(), this.defaulTableName);
     Database.Transaction transaction = this.database.beginTransaction();
 
-    // by default, create 100 records
+    // By default, create 100 records
     for (int i = 0; i < defaultNumRecords; i++) {
-      // generate a random record
+      // Generate a random record
       IntDataBox intValue = new IntDataBox(this.random.nextInt());
       FloatDataBox floatValue = new FloatDataBox(this.random.nextFloat());
       BoolDataBox boolValue = new BoolDataBox(this.random.nextBoolean());
@@ -69,7 +69,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testSimpleSelect() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSimpleSelect() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
 
@@ -95,7 +95,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testSimpleWhere() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSimpleWhere() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
 
@@ -113,7 +113,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testSimpleGroupBy() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSimpleGroupBy() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
     MarkerRecord markerRecord = MarkerRecord.getMarker();
@@ -140,7 +140,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testSimpleJoin() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSimpleJoin() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
 
@@ -166,7 +166,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testSelectWhere() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSelectWhere() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
 
@@ -194,7 +194,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testSelectJoin() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSelectJoin() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     transaction.queryAs(this.defaulTableName, "t1");
     transaction.queryAs(this.defaulTableName, "t2");
@@ -228,7 +228,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testWhereJoin() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanWhereJoin() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     transaction.queryAs(this.defaulTableName, "t1");
 
@@ -255,7 +255,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testSelectWhereJoin() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSelectWhereJoin() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     transaction.queryAs(this.defaulTableName, "t1");
 
@@ -287,7 +287,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testSelectGroupBy() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSelectGroupBy() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
 
@@ -321,7 +321,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testWhereGroupBy() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanWhereGroupBy() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
 
@@ -353,7 +353,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testSelectWhereGroupBy() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSelectWhereGroupBy() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
 
@@ -391,7 +391,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testSelectWhereGroupByJoin() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSelectWhereGroupByJoin() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     transaction.queryAs(this.defaulTableName, "t1");
 
@@ -432,7 +432,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testEmptyWhereResult() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanEmptyWhereResult() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
 
@@ -452,7 +452,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testEmptyJoinResult() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanEmptyJoinResult() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
 
@@ -479,7 +479,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testSelectGroupByWithAggregates() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSelectGroupByWithAggregates() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
 
@@ -514,7 +514,7 @@ public class QueryPlanTest {
   }
 
   @Test(expected = QueryPlanException.class)
-  public void testSelectColumnNotInGroupBy() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanSelectColumnNotInGroupBy() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     QueryPlan queryPlan = transaction.query(this.defaulTableName);
 
@@ -529,7 +529,7 @@ public class QueryPlanTest {
   }
 
   @Test
-  public void testQueryAsWithJoin() throws DatabaseException, QueryPlanException {
+  public void testQueryPlanQueryAsWithJoin() throws DatabaseException, QueryPlanException {
     Database.Transaction transaction = this.database.beginTransaction();
     transaction.queryAs(this.defaulTableName, "t1");
     transaction.queryAs(this.defaulTableName, "t2");
