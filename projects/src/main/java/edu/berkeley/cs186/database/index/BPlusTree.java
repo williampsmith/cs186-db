@@ -2,8 +2,10 @@ package edu.berkeley.cs186.database.index;
 
 import edu.berkeley.cs186.database.io.Page;
 import edu.berkeley.cs186.database.io.PageAllocator;
+import edu.berkeley.cs186.database.table.Record;
 import edu.berkeley.cs186.database.table.RecordID;
 import edu.berkeley.cs186.database.databox.*;
+import edu.berkeley.cs186.database.table.RecordIterator;
 
 import java.util.*;
 import java.nio.file.Paths;
@@ -128,7 +130,19 @@ public class BPlusTree {
      * @param rid the RecordID of the given key
      */
     public void insertKey(DataBox key, RecordID rid) {
-        // Implement me!
+        LeafEntry leafEntry = new LeafEntry(key, rid);
+        BPlusNode root = BPlusNode.getBPlusNode(this, this.rootPageNum);
+        BEntry returnedEntry = root.insertBEntry(leafEntry);
+//        System.out.println(key);
+
+        if (returnedEntry != null) {
+            InnerNode newRoot = new InnerNode(this);
+            newRoot.setFirstChild(this.rootPageNum);
+            this.updateRoot(newRoot.getPageNum());
+            List<BEntry> newEntry = new ArrayList<BEntry>();
+            newEntry.add(returnedEntry);
+            newRoot.overwriteBNodeEntries(newEntry);
+        }
     }
 
     /**
@@ -224,11 +238,162 @@ public class BPlusTree {
     }
 
     /**
+     * helper class for minimal storing of DFS data
+     */
+    public class NodeData {
+        private int pageNum;
+        private int index;
+
+        public NodeData(int pageNum) {
+            this.pageNum = pageNum;
+            this.index = -1;
+        }
+
+        public void incrementIndex() {
+            this.index++;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+    }
+
+
+    /**
      * A BPlusIterator provides several ways of iterating over RecordIDs stored
      * in a BPlusTree.
      */
     private class BPlusIterator implements Iterator<RecordID> {
-        // Implement me!
+        private BPlusNode currentNode; // use int findChildFromKey(DataBox key) to get next node
+        private List<BEntry> nodeEntries;
+        private Iterator<RecordID> recordIter; // for leaf nodes
+        private Stack<NodeData> nodeStack;
+        private DataBox key;
+        private boolean scan;
+        private boolean fullScan;
+        private boolean notFound; // flag set if constructor finds that search will return empty
+
+        /**
+         * Helper function
+         * Begin a DFS to find the first leaf node while saving state
+         * @param root root node of tree
+         */
+        public void initializeRange(BPlusNode root) {
+            if (root.isLeaf()) {
+                return;
+            }
+
+//            this.nodeStack.push(new NodeData(root.getPageNum()));
+            BPlusNode current = root;
+
+            while (!current.isLeaf()) {
+                nodeStack.push(new NodeData(current.getPageNum()));
+                List<BEntry> currentNodeEntries = current.getAllValidEntries();
+                int childPage = ((InnerNode)current).getFirstChild();
+                current = BPlusNode.getBPlusNode(BPlusTree.this, childPage);
+            }
+            this.currentNode = current;
+        }
+
+        public void initializeRangeBeginningAt(DataBox key, BPlusNode root) {
+            if (root.isLeaf()) {
+                return;
+            }
+
+            //push the root
+            BPlusNode current = root;
+            NodeData nodeData = new NodeData(root.getPageNum());
+
+            while (!current.isLeaf()) {
+                int childPage = ((InnerNode)current).findChildFromKey(key, nodeData);
+                this.nodeStack.push(nodeData);
+                current = BPlusNode.getBPlusNode(BPlusTree.this, childPage);
+                nodeData = new NodeData(current.getPageNum());
+            }
+            // current node is now a leaf
+            this.currentNode = current;
+
+            if (this.scan) {
+                while (!((LeafNode)current).scanFrom(key).hasNext()) {
+                    current = this.getNextLeaf();
+                    if (current == null) {
+                        this.notFound = true;
+                        break;
+                    }
+                }
+            } else {
+//                System.out.println((((LeafNode)current).containsKey(key)));
+                while (!(((LeafNode)current).containsKey(key))) {
+                    current = this.getNextLeaf();
+//                    System.out.println(current.getAllValidEntries());
+                    if (current == null) {
+                        this.notFound = true;
+                        break;
+                    }
+
+                    if (key.compareTo(current.getAllValidEntries().get(0).getKey()) == -1) {
+                        this.notFound = true;
+                        break;
+                    }
+                }
+            }
+            this.currentNode = current;
+//            System.out.println(current.getAllValidEntries());
+        }
+
+        /**
+         * Helper function
+         * Continues DFS from constructor by traversing to next leaf node and updating the stack.
+         * Updates currentNode. After execution, currentNode will be a leaf node, or null.
+         */
+        public BPlusNode getNextLeaf() {
+            if (this.nodeStack.empty()){
+//                System.out.println("1");
+                return null;
+            }
+
+            if (BPlusTree.this.rootPageNum == this.currentNode.getPageNum()) {
+//                System.out.println("2");
+                return null;
+            }
+
+            NodeData currentData = this.nodeStack.peek();
+            currentData.incrementIndex();
+            BPlusNode current = BPlusNode.getBPlusNode(BPlusTree.this, currentData.pageNum);
+            List<BEntry> currentEntries = current.getAllValidEntries();
+
+            // find first parent node with unvisited children
+            while (currentData.index >= currentEntries.size()) { // visited all children
+                    this.nodeStack.pop();
+
+                    if (this.nodeStack.empty()) {
+                        this.notFound = true;
+//                        System.out.println("3");
+                        return null;
+                    }
+                    currentData = this.nodeStack.peek();
+                    currentData.incrementIndex();
+                    current = BPlusNode.getBPlusNode(BPlusTree.this, currentData.pageNum);
+                    currentEntries = current.getAllValidEntries();
+            }
+
+            // get first child
+            BEntry childEntry = currentEntries.get(currentData.index);
+            NodeData childData = new NodeData(childEntry.getPageNum());
+            BPlusNode child = BPlusNode.getBPlusNode(BPlusTree.this, childData.pageNum);
+
+            // find first unvisited leaf node
+            while (!child.isLeaf()) { // traverse children until we reach leaf
+                this.nodeStack.push(childData);
+                childData = new NodeData(((InnerNode)child).getFirstChild());
+                child = BPlusNode.getBPlusNode(BPlusTree.this, childData.pageNum);
+            }
+
+            // now child is an unvisited leaf
+            this.currentNode = child;
+            this.nodeEntries = this.currentNode.getAllValidEntries();
+            return child;
+        }
 
         /**
          * Construct an iterator that performs a sorted scan on this BPlusTree
@@ -239,7 +404,24 @@ public class BPlusTree {
          * @param root the root node of this BPlusTree
          */
         public BPlusIterator(BPlusNode root) {
-            // Implement me!
+            this.currentNode = root;
+            this.nodeEntries = this.currentNode.getAllValidEntries();
+            this.recordIter = null; // set once we reach leaf
+            this.nodeStack = new Stack<NodeData>();
+            this.key = null;
+            this.scan = true;
+            this.fullScan = true;
+            this.notFound = false;
+
+            if (root == null) {
+                throw new NullPointerException("Error: Root is null");
+            }
+
+            this.initializeRange(root);
+            this.recordIter = ((LeafNode) this.currentNode).scan();
+            if (!this.recordIter.hasNext()) {
+                this.notFound = true;
+            }
         }
 
         /**
@@ -255,7 +437,36 @@ public class BPlusTree {
          * @param scan if true, do a range search; else, equality search
          */
         public BPlusIterator(BPlusNode root, DataBox key, boolean scan) {
-            // Implement me!
+            this.currentNode = root;
+            this.nodeEntries = this.currentNode.getAllValidEntries();
+            this.recordIter = null; // set once we reach leaf
+            this.nodeStack = new Stack<NodeData>();
+            this.key = key;
+            this.scan = scan;
+            this.fullScan = false;
+            this.notFound = false;
+
+            if(root == null) {
+                throw new BPlusTreeException("Error: Root is null");
+            }
+
+            if (key == null) {
+                throw new BPlusTreeException("Error: Key is null");
+            }
+
+            this.initializeRangeBeginningAt(key, root);
+
+            if (!this.notFound) {
+                if (scan) { // seek to beginning of scan
+                    this.recordIter = ((LeafNode) this.currentNode).scanFrom(key);
+                } else { // seek to first equality
+                    this.recordIter = ((LeafNode) this.currentNode).scanForKey(key);
+                }
+
+                if (!this.recordIter.hasNext()) {
+                    this.notFound = true;
+                }
+            }
         }
 
         /**
@@ -265,8 +476,8 @@ public class BPlusTree {
          * otherwise
          */
         public boolean hasNext() {
-            // Implement me!
-            return false;
+//            System.out.println("hasNext: " + (!this.notFound && this.recordIter.hasNext()));
+            return !this.notFound && this.recordIter.hasNext();
         }
 
         /**
@@ -277,8 +488,34 @@ public class BPlusTree {
          * yield
          */
         public RecordID next() {
-            // Implement me!
-            return null;
+            if (!this.hasNext()) {
+                throw new NoSuchElementException("Error: key not found in index");
+            }
+
+            RecordID nextRecord = this.recordIter.next();
+            if (!this.recordIter.hasNext()) { // go to next node
+                BPlusNode nextNode = this.getNextLeaf();
+                this.currentNode = nextNode;
+//                System.out.println(this.currentNode.getAllValidEntries());
+
+                if (nextNode == null) {
+                    this.notFound = true; // next call to hasNext() will return false
+                }
+                else if (this.fullScan) {
+                    this.recordIter = ((LeafNode) this.currentNode).scan();
+                }
+                else if (this.scan) {
+                    this.recordIter = ((LeafNode) this.currentNode).scanFrom(key);
+                } else { // seek to first equality
+                    this.recordIter = ((LeafNode) this.currentNode).scanForKey(key);
+                }
+            }
+
+            if (nextRecord == null) { // should never happen
+                throw new NoSuchElementException("Error. Something went wrong in next().");
+            }
+
+            return nextRecord;
         }
 
         public void remove() {
