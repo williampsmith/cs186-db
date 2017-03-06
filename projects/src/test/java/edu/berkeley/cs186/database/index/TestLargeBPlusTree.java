@@ -487,6 +487,7 @@ public class TestLargeBPlusTree {
         bp.sortedScanFrom(null);
     }
 
+    // tests next call without call to hasNext()
     @Test(expected = NoSuchElementException.class)
     @Category(StudentTestP2.class)
     public void testNaiveNextCall() {
