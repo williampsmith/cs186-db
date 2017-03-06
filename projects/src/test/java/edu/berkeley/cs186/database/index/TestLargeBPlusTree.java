@@ -481,6 +481,7 @@ public class TestLargeBPlusTree {
         assertEquals(2, j);
     }
 
+    // tests for exception handling of null key scan
     @Test(expected = BPlusTreeException.class)
     @Category(StudentTestP2.class)
     public void testNullRangeScan() {
