@@ -2,7 +2,7 @@
 
 ## Logistics
 
-**Due date: Saturday 4/7/17, 11:59:59 PM**
+**Due date: Friday 4/7/17, 11:59:59 PM**
 
 ### Grading
 
