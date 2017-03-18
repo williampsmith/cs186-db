@@ -63,6 +63,11 @@ public class FloatDataBox extends DataBox {
     return this.getFloat() == other.getFloat();
   }
 
+  @Override
+  public int hashCode() {
+    return (int) this.getFloat();
+  }
+
   public int compareTo(Object obj) {
     if (this.getClass() != obj.getClass()) {
       throw new DataBoxException("Invalid Comparsion");

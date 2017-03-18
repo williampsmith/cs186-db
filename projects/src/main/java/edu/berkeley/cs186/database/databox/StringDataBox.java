@@ -79,6 +79,11 @@ public class StringDataBox extends DataBox {
   }
 
   @Override
+  public int hashCode() {
+    return this.getString().hashCode();
+  }
+
+  @Override
   public int compareTo(Object obj) {
     if (this.getClass() != obj.getClass()) {
       throw new DataBoxException("Invalid Comparsion");

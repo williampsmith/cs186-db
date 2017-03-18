@@ -5,7 +5,7 @@ import java.util.List;
 
 public class StringHistogram implements Histogram<String> {
   private List<Bucket<String>> buckets;
-  private static String alphaNumeric = " abcdefghijklmnopqrstuvwxyz0123456789";
+  public static String alphaNumeric = " abcdefghijklmnopqrstuvwxyz0123456789";
 
   public StringHistogram() {
     this.buckets = new ArrayList<Bucket<String>>();

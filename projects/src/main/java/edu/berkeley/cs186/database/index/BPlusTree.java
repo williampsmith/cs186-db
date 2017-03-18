@@ -37,7 +37,7 @@ public class BPlusTree {
      * This constructor is used for creating an empty BPlusTree.
      *
      * @param keySchema the schema of the index key
-     * @param fName the filename of where the index will be built
+     * @param fName the filename of select the index will be built
      */
     public BPlusTree(DataBox keySchema, String fName) {
         this(keySchema, fName, FILENAME_PREFIX);
@@ -222,6 +222,8 @@ public class BPlusTree {
                 break;
         }
     }
+
+    private enum TypeOfScan {SORTED_SCAN, SORTED_SCAN_FROM, LOOKUP_KEY};
 
     /**
      * A BPlusIterator provides several ways of iterating over RecordIDs stored

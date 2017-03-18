@@ -1,10 +1,6 @@
 package edu.berkeley.cs186.database.query;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import edu.berkeley.cs186.database.Database;
 import edu.berkeley.cs186.database.DatabaseException;
@@ -37,56 +33,85 @@ public class GroupByOperator extends QueryOperator {
     this.groupByColumnIndex = sourceSchema.getFieldNames().indexOf(this.groupByColumn);
   }
 
-  /**
-   * Read input tuples from source, group by groupByColumn, and return an iterator. Inserts
-   * MarkerRecord between each group.
-   *
-   * @return
-   * @throws QueryPlanException
-   * @throws DatabaseException
-   */
-  public Iterator<Record> execute() throws QueryPlanException, DatabaseException {
-    Map<String, String> hashGroupTempTables = new HashMap<String, String>();
-    Iterator<Record> inputRecords = this.getSource().execute();
-
-    while (inputRecords.hasNext()) {
-      Record record = inputRecords.next();
-      DataBox groupByColumn = record.getValues().get(this.groupByColumnIndex);
-
-      String tableName;
-      if (!hashGroupTempTables.containsKey(groupByColumn.toString())) {
-        tableName = "Temp" + this.groupByColumn + "GroupBy" + hashGroupTempTables.size();
-
-        this.transaction.createTempTable(this.getSource().getOutputSchema(), tableName);
-        hashGroupTempTables.put(groupByColumn.toString(), tableName);
-      } else {
-        tableName = hashGroupTempTables.get(groupByColumn.toString());
-      }
-
-      this.transaction.addRecord(tableName, record.getValues());
-    }
-
-    MarkerRecord markerRecord = MarkerRecord.getMarker();
-    List<Record> recordList = new ArrayList<Record>();
-
-    int count = 0;
-    for (String key : hashGroupTempTables.keySet()) {
-      String tableName = hashGroupTempTables.get(key);
-      Iterator<Record> recordIterator = this.transaction.getRecordIterator(tableName);
-
-      while (recordIterator.hasNext()) {
-        recordList.add(recordIterator.next());
-      }
-
-      if (++count < hashGroupTempTables.size()) {
-        recordList.add(markerRecord);
-      }
-    }
-
-    return recordList.iterator();
+  public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
+    return new GroupByIterator();
   }
 
   protected Schema computeSchema() throws QueryPlanException {
     return this.getSource().getOutputSchema();
+  }
+
+  /**
+   * An implementation of Iterator that provides an iterator interface for this operator.
+   */
+  private class GroupByIterator implements Iterator<Record> {
+    private Iterator<Record> sourceIterator;
+    private MarkerRecord markerRecord;
+    private Map<String, String> hashGroupTempTables;
+    private int currCount;
+    private Iterator<String> keyIter;
+    private Iterator<Record> rIter;
+
+    public GroupByIterator() throws QueryPlanException, DatabaseException {
+      this.sourceIterator = GroupByOperator.this.getSource().iterator();
+      this.markerRecord = MarkerRecord.getMarker();
+      this.hashGroupTempTables = new HashMap<String, String>();
+      this.currCount = 0;
+      this.rIter = null;
+      while (this.sourceIterator.hasNext()) {
+        Record record = this.sourceIterator.next();
+        DataBox groupByColumn = record.getValues().get(GroupByOperator.this.groupByColumnIndex);
+        String tableName;
+        if (!this.hashGroupTempTables.containsKey(groupByColumn.toString())) {
+          tableName = "Temp" + GroupByOperator.this.groupByColumn + "GroupBy" + this.hashGroupTempTables.size();
+          GroupByOperator.this.transaction.createTempTable(GroupByOperator.this.getSource().getOutputSchema(), tableName);
+          this.hashGroupTempTables.put(groupByColumn.toString(), tableName);
+        } else {
+          tableName = this.hashGroupTempTables.get(groupByColumn.toString());
+        }
+        GroupByOperator.this.transaction.addRecord(tableName, record.getValues());
+      }
+      this.keyIter = hashGroupTempTables.keySet().iterator();
+    }
+
+    /**
+     * Checks if there are more record(s) to yield
+     *
+     * @return true if this iterator has another record to yield, otherwise false
+     */
+    public boolean hasNext() {
+      return this.keyIter.hasNext() || (this.rIter != null && this.rIter.hasNext());
+    }
+
+    /**
+     * Yields the next record of this iterator.
+     *
+     * @return the next Record
+     * @throws NoSuchElementException if there are no more Records to yield
+     */
+    public Record next() {
+      while (this.hasNext()) {
+        if (this.rIter != null && this.rIter.hasNext()) {
+          return this.rIter.next();
+        } else if (this.keyIter.hasNext()) {
+          String key = this.keyIter.next();
+          String tableName = this.hashGroupTempTables.get(key);
+          Iterator<Record> prevIter = this.rIter;
+          try {
+            this.rIter = GroupByOperator.this.transaction.getRecordIterator(tableName);
+          } catch (DatabaseException de) {
+            throw new NoSuchElementException();
+          }
+          if (prevIter != null && ++this.currCount < this.hashGroupTempTables.size()) {
+            return markerRecord;
+          }
+        }
+      }
+      throw new NoSuchElementException();
+    }
+
+    public void remove() {
+      throw new UnsupportedOperationException();
+    }
   }
 }

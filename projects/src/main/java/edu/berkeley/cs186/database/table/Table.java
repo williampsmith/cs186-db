@@ -115,7 +115,7 @@ public class Table implements Iterable<Record>, Closeable {
    *
    * @param schema the schema for this table
    * @param tableName the name of the table
-   * @param filenamePrefix the prefix where the table's files will be created
+   * @param filenamePrefix the prefix select the table's files will be created
    */
   public Table(Schema schema, String tableName, String filenamePrefix) {
     this.schema = schema;
@@ -137,6 +137,10 @@ public class Table implements Iterable<Record>, Closeable {
 
   public Iterator<Record> iterator() {
       return new TableIterator();
+  }
+
+  public Iterator<Page> pageIterator() {
+    return this.allocator.iterator();
   }
 
   /**
@@ -201,9 +205,19 @@ public class Table implements Iterable<Record>, Closeable {
     return this.numEntriesPerPage;
   }
 
+  public int getNumDataPages() {
+    return this.allocator.getNumPages() - 1;
+  }
+
+  public long getNumRecords() {
+    return this.numRecords;
+  }
+
   public Schema getSchema() {
     return this.schema;
   }
+
+  public TableStats getStats() { return this.stats; }
 
   /**
    * Checks whether a RecordID is valid or not. That is, check to see if the slot
@@ -391,9 +405,19 @@ public class Table implements Iterable<Record>, Closeable {
    * @param page the page to read from
    * @return a byte[] with the slot header
    */
-  private byte[] readPageHeader(Page page) {
+  public byte[] readPageHeader(Page page) {
     return page.readBytes(0, this.pageHeaderSize);
   }
+
+  public int getPageHeaderSize() {
+    return this.pageHeaderSize;
+  }
+
+  public int getEntrySize()  {
+    return this.schema.getEntrySize();
+  }
+
+  public int getNumPages() { return this.allocator.getNumPages(); }
 
   /**
    * An implementation of Iterator that provides an iterator interface over all

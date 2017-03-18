@@ -6,6 +6,7 @@ import edu.berkeley.cs186.database.Database;
 import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.table.Record;
 import edu.berkeley.cs186.database.table.Schema;
+import edu.berkeley.cs186.database.table.stats.TableStats;
 
 public class SequentialScanOperator extends QueryOperator {
   private Database.Transaction transaction;
@@ -25,14 +26,16 @@ public class SequentialScanOperator extends QueryOperator {
   public SequentialScanOperator(Database.Transaction transaction,
                                 String tableName) throws QueryPlanException, DatabaseException {
     super(OperatorType.SEQSCAN);
-
     this.transaction = transaction;
     this.tableName = tableName;
-
     this.setOutputSchema(this.computeSchema());
   }
 
-  public Iterator<Record> execute() throws DatabaseException {
+  public String getTableName() {
+    return this.tableName;
+  }
+
+  public Iterator<Record> iterator() throws DatabaseException {
     return this.transaction.getRecordIterator(tableName);
   }
 
@@ -42,5 +45,11 @@ public class SequentialScanOperator extends QueryOperator {
     } catch (DatabaseException de) {
       throw new QueryPlanException(de);
     }
+  }
+
+  @Override
+  public String toString() {
+    return "type: " + this.getType() +
+            "\ntable: " + this.tableName;
   }
 }

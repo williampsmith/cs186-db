@@ -4,18 +4,33 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.berkeley.cs186.database.Database;
 import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.table.Record;
+import edu.berkeley.cs186.database.table.RecordID;
 import edu.berkeley.cs186.database.table.Schema;
+import edu.berkeley.cs186.database.table.stats.TableStats;
+import edu.berkeley.cs186.database.io.Page;
 
-public class JoinOperator extends QueryOperator {
+public abstract class JoinOperator extends QueryOperator {
+
+  public enum JoinType {
+    SNLJ,
+    PNLJ,
+    BNLJ,
+    GRACEHASH,
+    SORTMERGE
+  }
+
+  private JoinType joinType;
   private QueryOperator leftSource;
   private QueryOperator rightSource;
   private int leftColumnIndex;
   private int rightColumnIndex;
   private String leftColumnName;
   private String rightColumnName;
+  private Database.Transaction transaction;
 
   /**
    * Create a join operator that pulls tuples from leftSource and rightSource. Returns tuples for which
@@ -30,49 +45,17 @@ public class JoinOperator extends QueryOperator {
   public JoinOperator(QueryOperator leftSource,
                       QueryOperator rightSource,
                       String leftColumnName,
-                      String rightColumnName) throws QueryPlanException {
+                      String rightColumnName,
+                      Database.Transaction transaction,
+                      JoinType joinType) throws QueryPlanException {
     super(OperatorType.JOIN);
-
+    this.joinType = joinType;
     this.leftSource = leftSource;
     this.rightSource = rightSource;
-
     this.leftColumnName = leftColumnName;
     this.rightColumnName = rightColumnName;
     this.setOutputSchema(this.computeSchema());
-  }
-
-  /**
-   * Joins tuples from leftSource and rightSource and returns an iterator of records.
-   *
-   * @return an iterator of records
-   * @throws QueryPlanException
-   * @throws DatabaseException
-   */
-  public Iterator<Record> execute() throws QueryPlanException, DatabaseException {
-    List<Record> newRecords = new ArrayList<Record>();
-    Iterator<Record> leftIterator = this.leftSource.execute();
-
-    while (leftIterator.hasNext()) {
-      Record leftRecord = leftIterator.next();
-
-      Iterator<Record> rightIterator = this.rightSource.execute();
-      while (rightIterator.hasNext()) {
-        Record rightRecord = rightIterator.next();
-
-        DataBox leftJoinValue = leftRecord.getValues().get(this.leftColumnIndex);
-        DataBox rightJoinValue = rightRecord.getValues().get(this.rightColumnIndex);
-
-        if (leftJoinValue.equals(rightJoinValue)) {
-          List<DataBox> leftValues = new ArrayList<DataBox>(leftRecord.getValues());
-          List<DataBox> rightValues = new ArrayList<DataBox>(rightRecord.getValues());
-
-          leftValues.addAll(rightValues);
-          newRecords.add(new Record(leftValues));
-        }
-      }
-    }
-
-    return newRecords.iterator();
+    this.transaction = transaction;
   }
 
   @Override
@@ -102,25 +85,100 @@ public class JoinOperator extends QueryOperator {
     Schema rightSchema = this.rightSource.getOutputSchema();
     List<String> leftSchemaNames = new ArrayList<String>(leftSchema.getFieldNames());
     List<String> rightSchemaNames = new ArrayList<String>(rightSchema.getFieldNames());
-
     this.leftColumnName = this.checkSchemaForColumn(leftSchema, this.leftColumnName);
     this.leftColumnIndex = leftSchemaNames.indexOf(leftColumnName);
-
     this.rightColumnName = this.checkSchemaForColumn(rightSchema, this.rightColumnName);
     this.rightColumnIndex = rightSchemaNames.indexOf(rightColumnName);
-
     List<DataBox> leftSchemaTypes = new ArrayList<DataBox>(leftSchema.getFieldTypes());
     List<DataBox> rightSchemaTypes = new ArrayList<DataBox>(rightSchema.getFieldTypes());
-
     if (!leftSchemaTypes.get(this.leftColumnIndex).getClass().equals(rightSchemaTypes.get(
         this.rightColumnIndex).getClass())) {
       throw new QueryPlanException("Mismatched types of columns " + leftColumnName + " and "
           + rightColumnName + ".");
     }
-
     leftSchemaNames.addAll(rightSchemaNames);
     leftSchemaTypes.addAll(rightSchemaTypes);
-
     return new Schema(leftSchemaNames, leftSchemaTypes);
+  }
+
+  public String str() {
+    return "type: " + this.joinType +
+            "\nleftColumn: " + this.leftColumnName +
+            "\nrightColumn: " + this.rightColumnName;
+  }
+
+  @Override
+  public String toString() {
+    String r = this.str();
+    if (this.leftSource != null) {
+      r += "\n" + ("(left)\n" + this.leftSource.toString()).replaceAll("(?m)^", "\t");
+    }
+    if (this.rightSource != null) {
+      if (this.leftSource != null) {
+        r += "\n";
+      }
+      r += "\n" + ("(right)\n" + this.rightSource.toString()).replaceAll("(?m)^", "\t");
+    }
+    return r;
+  }
+
+  public Schema getSchema(String tableName) throws DatabaseException {
+    return this.transaction.getSchema(tableName);
+  }
+
+  public Iterator<Page> getPageIterator(String tableName) throws DatabaseException {
+    return this.transaction.getPageIterator(tableName);
+  }
+
+  public byte[] getPageHeader(String tableName, Page p) throws DatabaseException {
+    return this.transaction.readPageHeader(tableName, p);
+  }
+
+  public int getNumEntriesPerPage(String tableName) throws DatabaseException {
+    return this.transaction.getNumEntriesPerPage(tableName);
+  }
+
+  public int getEntrySize(String tableName) throws DatabaseException {
+    return this.transaction.getEntrySize(tableName);
+  }
+
+  public int getHeaderSize(String tableName) throws DatabaseException {
+    return this.transaction.getPageHeaderSize(tableName);
+  }
+
+  public String getLeftColumnName() {
+    return this.leftColumnName;
+  }
+
+  public String getRightColumnName() {
+    return this.rightColumnName;
+  }
+
+  public Database.Transaction getTransaction() {
+    return this.transaction;
+  }
+
+  public int getLeftColumnIndex() {
+    return this.leftColumnIndex;
+  }
+
+  public int getRightColumnIndex() {
+    return this.rightColumnIndex;
+  }
+
+  public Iterator<Record> getTableIterator(String tableName) throws DatabaseException {
+    return this.transaction.getRecordIterator(tableName);
+  }
+
+  public void createTempTable(Schema schema, String tableName) throws DatabaseException {
+    this.transaction.createTempTable(schema, tableName);
+  }
+
+  public RecordID addRecord(String tableName, List<DataBox> values) throws DatabaseException {
+    return this.transaction.addRecord(tableName, values);
+  }
+
+  public JoinType getJoinType() {
+    return this.joinType;
   }
 }

@@ -53,15 +53,16 @@ public class InnerNode extends BPlusNode {
      * contains the given key
      */
     public int findChildFromKey(DataBox key) {
-        int keyPage = getFirstChild();  // Default keyPage
-        List<BEntry> entries = getAllValidEntries();
-        for (BEntry ent : entries) {
-            if (key.compareTo(ent.getKey()) < 0) {
+        int childToTraverse = getFirstChild();
+        List<BEntry> validEntries = getAllValidEntries();
+        for (BEntry entry : validEntries) {
+            if (key.compareTo(entry.getKey()) < 0) {
                 break;
+            } else {
+                childToTraverse = entry.getPageNum();
             }
-            keyPage = ent.getPageNum();
         }
-        return keyPage;
+        return childToTraverse;
     }
 
     /**

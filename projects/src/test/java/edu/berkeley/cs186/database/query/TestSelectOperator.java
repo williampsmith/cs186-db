@@ -1,8 +1,9 @@
 package edu.berkeley.cs186.database.query;
 
-import edu.berkeley.cs186.database.databox.DataBox;
-import edu.berkeley.cs186.database.databox.IntDataBox;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.rules.Timeout;
+import org.junit.Rule;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,28 +13,34 @@ import java.util.Set;
 
 import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.TestUtils;
+import edu.berkeley.cs186.database.StudentTest;
+import edu.berkeley.cs186.database.StudentTestP3;
+import edu.berkeley.cs186.database.databox.DataBox;
+import edu.berkeley.cs186.database.databox.IntDataBox;
 import edu.berkeley.cs186.database.table.Record;
 
 import static org.junit.Assert.*;
 
-public class WhereOperatorTest {
+public class TestSelectOperator {
+  @Rule
+  public Timeout globalTimeout = Timeout.seconds(1); // 1 seconds max per method tested
 
   @Test
   public void testWhereOperatorSchema() throws QueryPlanException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
-    WhereOperator whereOperator = new WhereOperator(sourceOperator, "int",
-        QueryPlan.PredicateOperator.EQUALS, new IntDataBox(1));
+    SelectOperator selectOperator = new SelectOperator(sourceOperator, "int",
+            QueryPlan.PredicateOperator.EQUALS, new IntDataBox(1));
 
-    assertEquals(TestUtils.createSchemaWithAllTypes(), whereOperator.getOutputSchema());
+    assertEquals(TestUtils.createSchemaWithAllTypes(), selectOperator.getOutputSchema());
   }
 
   @Test
-  public void testWhereFiltersCorrectRecords() throws QueryPlanException, DatabaseException {
+  public void testSelectFiltersCorrectRecords() throws QueryPlanException, DatabaseException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
-    WhereOperator whereOperator = new WhereOperator(sourceOperator, "int",
-        QueryPlan.PredicateOperator.EQUALS, new IntDataBox(1));
+    SelectOperator selectOperator = new SelectOperator(sourceOperator, "int",
+            QueryPlan.PredicateOperator.EQUALS, new IntDataBox(1));
 
-    Iterator<Record> output = whereOperator.execute();
+    Iterator<Record> output = selectOperator.execute();
     List<Record> outputList = new ArrayList<Record>();
 
     while (output.hasNext()) {
@@ -49,12 +56,12 @@ public class WhereOperatorTest {
   }
 
   @Test
-  public void testWhereRemovesIncorrectRecords() throws QueryPlanException, DatabaseException {
+  public void testSelectRemovesIncorrectRecords() throws QueryPlanException, DatabaseException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
-    WhereOperator whereOperator = new WhereOperator(sourceOperator, "int",
-        QueryPlan.PredicateOperator.EQUALS, new IntDataBox(10));
+    SelectOperator selectOperator = new SelectOperator(sourceOperator, "int",
+            QueryPlan.PredicateOperator.EQUALS, new IntDataBox(10));
 
-    Iterator<Record> output = whereOperator.execute();
+    Iterator<Record> output = selectOperator.execute();
     List<Record> outputList = new ArrayList<Record>();
 
     while (output.hasNext()) {
@@ -65,21 +72,21 @@ public class WhereOperatorTest {
   }
 
   @Test
-  public void testWhereRemovesSomeRecords() throws QueryPlanException, DatabaseException {
+  public void testSelectRemovesSomeRecords() throws QueryPlanException, DatabaseException {
     List<Integer> values = new ArrayList<Integer>();
     values.add(1);
     values.add(2);
     values.add(3);
     TestSourceOperator sourceOperator = TestUtils.createTestSourceOperatorWithInts(values);
 
-    List<DataBox> dataValues = new ArrayList<DataBox>();
-    dataValues.add(new IntDataBox(1));
-    Record keptRecord = new Record(dataValues);
+    List<DataBox> dataTypeValues = new ArrayList<DataBox>();
+    dataTypeValues.add(new IntDataBox(1));
+    Record keptRecord = new Record(dataTypeValues);
 
-    WhereOperator whereOperator = new WhereOperator(sourceOperator, "int",
-        QueryPlan.PredicateOperator.EQUALS, new IntDataBox(1));
+    SelectOperator selectOperator = new SelectOperator(sourceOperator, "int",
+            QueryPlan.PredicateOperator.EQUALS, new IntDataBox(1));
 
-    Iterator<Record> output = whereOperator.execute();
+    Iterator<Record> output = selectOperator.execute();
     List<Record> outputList = new ArrayList<Record>();
 
     while (output.hasNext()) {
@@ -92,24 +99,24 @@ public class WhereOperatorTest {
   }
 
   @Test(expected = QueryPlanException.class)
-  public void testWhereFailsOnInvalidField() throws QueryPlanException, DatabaseException {
+  public void testSelectFailsOnInvalidField() throws QueryPlanException, DatabaseException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
-    new WhereOperator(sourceOperator, "nonexistentField",
-        QueryPlan.PredicateOperator.EQUALS, new IntDataBox(10));
+    new SelectOperator(sourceOperator, "nonexistentField",
+            QueryPlan.PredicateOperator.EQUALS, new IntDataBox(10));
   }
 
   @Test
-  public void testWhereNotEquals() throws QueryPlanException, DatabaseException {
+  public void testSelectNotEquals() throws QueryPlanException, DatabaseException {
     List<Integer> values = new ArrayList<Integer>();
     values.add(1);
     values.add(2);
     values.add(3);
     TestSourceOperator sourceOperator = TestUtils.createTestSourceOperatorWithInts(values);
 
-    WhereOperator whereOperator = new WhereOperator(sourceOperator, "int",
-        QueryPlan.PredicateOperator.NOT_EQUALS, new IntDataBox(1));
+    SelectOperator selectOperator = new SelectOperator(sourceOperator, "int",
+            QueryPlan.PredicateOperator.NOT_EQUALS, new IntDataBox(1));
 
-    Iterator<Record> output = whereOperator.execute();
+    Iterator<Record> output = selectOperator.execute();
     List<Record> outputList = new ArrayList<Record>();
 
     while (output.hasNext()) {
@@ -132,17 +139,17 @@ public class WhereOperatorTest {
   }
 
   @Test
-  public void testWhereLessThan() throws QueryPlanException, DatabaseException {
+  public void testSelectLessThan() throws QueryPlanException, DatabaseException {
     List<Integer> values = new ArrayList<Integer>();
     values.add(1);
     values.add(2);
     values.add(3);
     TestSourceOperator sourceOperator = TestUtils.createTestSourceOperatorWithInts(values);
 
-    WhereOperator whereOperator = new WhereOperator(sourceOperator, "int",
-        QueryPlan.PredicateOperator.LESS_THAN, new IntDataBox(3));
+    SelectOperator selectOperator = new SelectOperator(sourceOperator, "int",
+            QueryPlan.PredicateOperator.LESS_THAN, new IntDataBox(3));
 
-    Iterator<Record> output = whereOperator.execute();
+    Iterator<Record> output = selectOperator.execute();
     List<Record> outputList = new ArrayList<Record>();
 
     while (output.hasNext()) {
@@ -165,17 +172,17 @@ public class WhereOperatorTest {
   }
 
   @Test
-  public void testWhereGreaterThan() throws QueryPlanException, DatabaseException {
+  public void testSelectGreaterThan() throws QueryPlanException, DatabaseException {
     List<Integer> values = new ArrayList<Integer>();
     values.add(1);
     values.add(2);
     values.add(3);
     TestSourceOperator sourceOperator = TestUtils.createTestSourceOperatorWithInts(values);
 
-    WhereOperator whereOperator = new WhereOperator(sourceOperator, "int",
-        QueryPlan.PredicateOperator.GREATER_THAN, new IntDataBox(3));
+    SelectOperator selectOperator = new SelectOperator(sourceOperator, "int",
+            QueryPlan.PredicateOperator.GREATER_THAN, new IntDataBox(3));
 
-    Iterator<Record> output = whereOperator.execute();
+    Iterator<Record> output = selectOperator.execute();
     List<Record> outputList = new ArrayList<Record>();
 
     while (output.hasNext()) {
@@ -186,17 +193,17 @@ public class WhereOperatorTest {
   }
 
   @Test
-  public void testWhereLessThanEquals() throws QueryPlanException, DatabaseException {
+  public void testSelectLessThanEquals() throws QueryPlanException, DatabaseException {
     List<Integer> values = new ArrayList<Integer>();
     values.add(1);
     values.add(2);
     values.add(3);
     TestSourceOperator sourceOperator = TestUtils.createTestSourceOperatorWithInts(values);
 
-    WhereOperator whereOperator = new WhereOperator(sourceOperator, "int",
-        QueryPlan.PredicateOperator.LESS_THAN_EQUALS, new IntDataBox(3));
+    SelectOperator selectOperator = new SelectOperator(sourceOperator, "int",
+            QueryPlan.PredicateOperator.LESS_THAN_EQUALS, new IntDataBox(3));
 
-    Iterator<Record> output = whereOperator.execute();
+    Iterator<Record> output = selectOperator.execute();
     List<Record> outputList = new ArrayList<Record>();
 
     while (output.hasNext()) {
@@ -220,17 +227,17 @@ public class WhereOperatorTest {
   }
 
   @Test
-  public void testWhereGreaterThanEquals() throws QueryPlanException, DatabaseException {
+  public void testSelectGreaterThanEquals() throws QueryPlanException, DatabaseException {
     List<Integer> values = new ArrayList<Integer>();
     values.add(1);
     values.add(2);
     values.add(3);
     TestSourceOperator sourceOperator = TestUtils.createTestSourceOperatorWithInts(values);
 
-    WhereOperator whereOperator = new WhereOperator(sourceOperator, "int",
-        QueryPlan.PredicateOperator.GREATER_THAN_EQUALS, new IntDataBox(2));
+    SelectOperator selectOperator = new SelectOperator(sourceOperator, "int",
+            QueryPlan.PredicateOperator.GREATER_THAN_EQUALS, new IntDataBox(2));
 
-    Iterator<Record> output = whereOperator.execute();
+    Iterator<Record> output = selectOperator.execute();
     List<Record> outputList = new ArrayList<Record>();
 
     while (output.hasNext()) {

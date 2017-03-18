@@ -6,6 +6,7 @@ import java.util.List;
 import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.table.Record;
 import edu.berkeley.cs186.database.table.Schema;
+import edu.berkeley.cs186.database.table.stats.TableStats;
 
 public abstract class QueryOperator {
   private QueryOperator source;
@@ -14,8 +15,8 @@ public abstract class QueryOperator {
 
   public enum OperatorType {
     JOIN,
+    PROJECT,
     SELECT,
-    WHERE,
     GROUPBY,
     SEQSCAN,
     INDEXSCAN
@@ -46,11 +47,11 @@ public abstract class QueryOperator {
   }
 
   public boolean isWhere() {
-    return this.type.equals(OperatorType.WHERE);
+    return this.type.equals(OperatorType.SELECT);
   }
 
   public boolean isSelect() {
-    return this.type.equals(OperatorType.SELECT);
+    return this.type.equals(OperatorType.PROJECT);
   }
 
   public boolean isGroupBy() {
@@ -92,7 +93,11 @@ public abstract class QueryOperator {
 
   protected abstract Schema computeSchema() throws QueryPlanException;
 
-  public abstract Iterator<Record> execute() throws QueryPlanException, DatabaseException;
+  public Iterator<Record> execute() throws QueryPlanException, DatabaseException {
+    return iterator();
+  }
+
+  public abstract Iterator<Record> iterator() throws QueryPlanException, DatabaseException;
 
   /**
    * Utility method that checks to see if a column is found in a schema using dot notation.
@@ -105,14 +110,11 @@ public abstract class QueryOperator {
     if (fromSchema.equals(specified)) {
       return true;
     }
-
     if (fromSchema.contains(".")) {
       String[] splits = fromSchema.split("\\.");
       String schemaColName = splits[1];
-
       return schemaColName.equals(specified);
     }
-
     return false;
   }
 
@@ -128,22 +130,18 @@ public abstract class QueryOperator {
     List<String> schemaColumnNames = schema.getFieldNames();
     boolean found = false;
     String foundName = null;
-
     for (String sourceColumnName : schemaColumnNames) {
       if (this.checkColumnNameEquality(sourceColumnName, columnName)) {
         if (found) {
           throw new QueryPlanException("Column " + columnName + " specified twice without disambiguation.");
         }
-
         found = true;
         foundName = sourceColumnName;
       }
     }
-
     if (!found) {
       throw new QueryPlanException("No column " + columnName + " found.");
     }
-
     return foundName;
   }
 }
