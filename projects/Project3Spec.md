@@ -132,6 +132,7 @@ before getting down and dirty with the code. Think carefully about what instance
 
 For `SortMergeOperator`, you may want to consider implementing a helper function that sorts
 a single relation (though not required).
+
 For `GraceHashOperator`, always use the left table to build the hash table. 
 
 #### 1.2 Index Scan Operator
