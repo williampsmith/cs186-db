@@ -36,9 +36,27 @@ public class GraceHashOperator extends JoinOperator {
    * An implementation of Iterator that provides an iterator interface for this operator.
    */
   private class GraceHashIterator implements Iterator<Record> {
+    private Iterator<Record> leftIterator;
+    private Iterator<Record> rightIterator;
+    private String[] leftPartitions;
+    private String[] rightPartitions;
     /* TODO: Implement the GraceHashOperator */
 
     public GraceHashIterator() throws QueryPlanException, DatabaseException {
+      this.leftIterator = getLeftSource().iterator();
+      this.rightIterator = getRightSource().iterator();
+      leftPartitions = new String[numBuffers - 1];
+      rightPartitions = new String[numBuffers - 1];
+      String leftTableName;
+      String rightTableName;
+      for (int i = 0; i < numBuffers - 1; i++) {
+        leftTableName = "Temp HashJoin Left Partition " + Integer.toString(i);
+        rightTableName = "Temp HashJoin Right Partition " + Integer.toString(i);
+        GraceHashOperator.this.createTempTable(getLeftSource().getOutputSchema(), leftTableName);
+        GraceHashOperator.this.createTempTable(getRightSource().getOutputSchema(), rightTableName);
+        leftPartitions[i] = leftTableName;
+        rightPartitions[i] = rightTableName;
+      }
       /* TODO */
     }
 

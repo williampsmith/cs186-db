@@ -110,11 +110,17 @@ We will be checking the expected order of the output for each join.
 As such, DO NOT USE THE SAME CODE FOR ALL JOINS - you will be penalized heavily if you do.
 * For Block Nested Loop Join, you are given the number of buffer pages in your buffer
 pool as `numBuffers`.
-* For Sort Merge Join, you may assume that you will never need to "backtrack" to a previous page
-during the merge operation. You still need to account for the "backtrack" behavior in the algorithm,
-but can use the above assumption to make your life easier. You do not need to implement
-external sorting of the individual relations being joined.
 * For Grace Hash Join, you should use the `hashCode()` method in the `Databox` class.
+* For Grace Hash Join, build and probe on the left relation instead of the
+smaller relation. Note that this is different from what has been presented in lecture.
+* For Sort Merge Join, you may assume that you will never need to "backtrack"
+to a previous page during the merge operation (see Lecture 2/21 slides 62 and
+63). You still need to account for the "backtrack" behavior in the algorithm,
+but assume you will never need to read in a previous page.
+* For Sort Merge Join, you do not need to implement external sorting of the
+individual relations being joined. You should write your own function that
+sorts all records (i.e. `Collections.sort`) and writes them to a temporary
+table.
 * You may assume that underlying relations will not be modified while the result of their join
 operation is being iterated over.
 

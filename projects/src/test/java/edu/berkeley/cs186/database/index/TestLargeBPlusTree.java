@@ -215,7 +215,6 @@ public class TestLargeBPlusTree {
         Iterator<RecordID> rids;
 
         rids = bp.lookupKey(new IntDataBox(0));
-        System.out.println(rids);
         assertTrue(rids.hasNext());
 
         for (int i = 0; i < 2*intLeafPageSize; i++) {
