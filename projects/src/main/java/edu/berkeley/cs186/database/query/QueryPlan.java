@@ -27,14 +27,13 @@ public class QueryPlan {
   private Database.Transaction transaction;
   private QueryOperator finalOperator;
   private String startTableName;
-
   private List<String> joinTableNames;
   private List<String> joinLeftColumnNames;
   private List<String> joinRightColumnNames;
-  private List<String> whereColumnNames;
-  private List<PredicateOperator> whereOperators;
-  private List<DataBox> whereDataBoxes;
-  private List<String> selectColumns;
+  private List<String> selectColumnNames;
+  private List<PredicateOperator> SelectOperators;
+  private List<DataBox> selectDataBoxes;
+  private List<String> projectColumns;
   private String groupByColumn;
   private boolean hasCount;
   private String averageColumnName;
@@ -49,46 +48,39 @@ public class QueryPlan {
   public QueryPlan(Database.Transaction transaction, String startTableName) {
     this.transaction = transaction;
     this.startTableName = startTableName;
-
-    this.selectColumns = new ArrayList<String>();
+    this.projectColumns = new ArrayList<String>();
     this.joinTableNames = new ArrayList<String>();
     this.joinLeftColumnNames = new ArrayList<String>();
     this.joinRightColumnNames = new ArrayList<String>();
-
-    this.whereColumnNames = new ArrayList<String>();
-    this.whereOperators = new ArrayList<PredicateOperator>();
-    this.whereDataBoxes = new ArrayList<DataBox>();
-
+    this.selectColumnNames = new ArrayList<String>();
+    this.SelectOperators = new ArrayList<PredicateOperator>();
+    this.selectDataBoxes = new ArrayList<DataBox>();
     this.hasCount = false;
     this.averageColumnName = null;
     this.sumColumnName = null;
-
     this.groupByColumn = null;
-
     this.finalOperator = null;
   }
 
   /**
-   * Add a select operator to the QueryPlan with a list of column names. Can only specify one set
+   * Add a project operator to the QueryPlan with a list of column names. Can only specify one set
    * of selections.
    *
-   * @param columnNames the columns to select
+   * @param columnNames the columns to project
    * @throws QueryPlanException
    */
-  public void select(List<String> columnNames) throws QueryPlanException {
-    if (!this.selectColumns.isEmpty()) {
-      throw new QueryPlanException("Cannot add more than one select operator to this query.");
+  public void project(List<String> columnNames) throws QueryPlanException {
+    if (!this.projectColumns.isEmpty()) {
+      throw new QueryPlanException("Cannot add more than one project operator to this query.");
     }
-
     if (columnNames.isEmpty()) {
-      throw new QueryPlanException("Cannot select no columns.");
+      throw new QueryPlanException("Cannot project no columns.");
     }
-
-    this.selectColumns = columnNames;
+    this.projectColumns = columnNames;
   }
 
   /**
-   * Add a where operator. Only returns columns in which the column fulfills the predicate relative
+   * Add a select operator. Only returns columns in which the column fulfills the predicate relative
    * to value.
    *
    * @param column the column to specify the predicate on
@@ -96,10 +88,10 @@ public class QueryPlan {
    * @param value the value to compare against
    * @throws QueryPlanException
    */
-  public void where(String column, PredicateOperator comparison, DataBox value) throws QueryPlanException {
-    this.whereColumnNames.add(column);
-    this.whereOperators.add(comparison);
-    this.whereDataBoxes.add(value);
+  public void select(String column, PredicateOperator comparison, DataBox value) throws QueryPlanException {
+    this.selectColumnNames.add(column);
+    this.SelectOperators.add(comparison);
+    this.selectDataBoxes.add(value);
   }
 
   /**
@@ -156,7 +148,7 @@ public class QueryPlan {
   }
 
   /**
-   * Generates a naïve QueryPlan in which all joins are at the bottom of the DAG followed by all where
+   * Generates a naïve QueryPlan in which all joins are at the bottom of the DAG followed by all select
    * predicates, an optional group by operator, and a set of selects (in that order).
    *
    * @return an iterator of records that is the result of this query
@@ -164,68 +156,56 @@ public class QueryPlan {
    * @throws QueryPlanException
    */
   public Iterator<Record> execute() throws DatabaseException, QueryPlanException {
-
     // start off with the start table scan as the source
     this.finalOperator = new SequentialScanOperator(this.transaction, this.startTableName);
-
     this.addJoins();
-    this.addWheres();
-    this.addGroupBy();
     this.addSelects();
-
+    this.addGroupBy();
+    this.addProjects();
     return this.finalOperator.execute();
   }
 
   private void addJoins() throws QueryPlanException, DatabaseException {
     int index = 0;
-
     for (String joinTable : this.joinTableNames) {
       SequentialScanOperator scanOperator = new SequentialScanOperator(this.transaction, joinTable);
-
-      JoinOperator joinOperator = new JoinOperator(finalOperator, scanOperator,
-          this.joinLeftColumnNames.get(index), this.joinRightColumnNames.get(index));
-
+      SNLJOperator joinOperator = new SNLJOperator(finalOperator, scanOperator,
+              this.joinLeftColumnNames.get(index), this.joinRightColumnNames.get(index), this.transaction); //changed from new JoinOperator
       this.finalOperator = joinOperator;
       index++;
     }
   }
 
-  private void addWheres() throws QueryPlanException, DatabaseException {
+  private void addSelects() throws QueryPlanException, DatabaseException {
     int index = 0;
-
-    for (String whereColumn : this.whereColumnNames) {
-      PredicateOperator operator = this.whereOperators.get(index);
-      DataBox value = this.whereDataBoxes.get(index);
-
-      WhereOperator whereOperator = new WhereOperator(this.finalOperator, whereColumn,
+    for (String selectColumn : this.selectColumnNames) {
+      PredicateOperator operator = this.SelectOperators.get(index);
+      DataBox value = this.selectDataBoxes.get(index);
+      SelectOperator selectOperator = new SelectOperator(this.finalOperator, selectColumn,
           operator, value);
-
-      this.finalOperator = whereOperator;
+      this.finalOperator = selectOperator;
       index++;
     }
   }
 
   private void addGroupBy() throws QueryPlanException, DatabaseException {
     if (this.groupByColumn != null) {
-      if (this.selectColumns.size() > 2 || (this.selectColumns.size() == 1 &&
-          !this.selectColumns.get(0).equals(this.groupByColumn))) {
-        throw new QueryPlanException("Can only select columns specified in the GROUP BY clause.");
+      if (this.projectColumns.size() > 2 || (this.projectColumns.size() == 1 &&
+          !this.projectColumns.get(0).equals(this.groupByColumn))) {
+        throw new QueryPlanException("Can only project columns specified in the GROUP BY clause.");
       }
-
       GroupByOperator groupByOperator = new GroupByOperator(this.finalOperator, this.transaction,
           this.groupByColumn);
-
       this.finalOperator = groupByOperator;
     }
   }
 
-  private void addSelects() throws QueryPlanException, DatabaseException {
-    if (!this.selectColumns.isEmpty() || this.hasCount || this.sumColumnName != null
+  private void addProjects() throws QueryPlanException, DatabaseException {
+    if (!this.projectColumns.isEmpty() || this.hasCount || this.sumColumnName != null
         || this.averageColumnName != null) {
-      SelectOperator selectOperator = new SelectOperator(this.finalOperator, this.selectColumns,
+      ProjectOperator ProjectOperator = new ProjectOperator(this.finalOperator, this.projectColumns,
           this.hasCount, this.averageColumnName, this.sumColumnName);
-
-      this.finalOperator = selectOperator;
+      this.finalOperator = ProjectOperator;
     }
   }
 }

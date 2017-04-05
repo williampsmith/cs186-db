@@ -1,11 +1,11 @@
 package edu.berkeley.cs186.database.table;
 
-import edu.berkeley.cs186.database.StudentTest;
 import edu.berkeley.cs186.database.TestUtils;
-import edu.berkeley.cs186.database.databox.*;
+import edu.berkeley.cs186.database.databox.DataBox;
+import edu.berkeley.cs186.database.databox.IntDataBox;
+import edu.berkeley.cs186.database.databox.StringDataBox;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,6 @@ public class TestSchema {
     }
   }
 
-
   @Test(expected = SchemaException.class)
   public void testInvalidRecordLength() throws SchemaException {
     Schema schema = TestUtils.createSchemaWithAllTypes();
@@ -51,68 +50,6 @@ public class TestSchema {
 
     values.add(new StringDataBox("abcde", 5));
     values.add(new IntDataBox(10));
-
-    schema.verify(values);
-  }
-
-  /**
-   ***************************************
-   * Beginning of student added test cases
-   ***************************************
-   */
-
-  @Test(expected = SchemaException.class)
-  @Category(StudentTest.class)
-  public void testShortFieldLength() throws SchemaException {
-    Schema schema = TestUtils.createSchemaWithAllTypes();
-    List<DataBox> values = new ArrayList<DataBox>();
-
-    values.add(new BoolDataBox(true));
-    values.add(new IntDataBox(10));
-    values.add(new StringDataBox("abcd", 4));
-    values.add(new FloatDataBox(10));
-
-    schema.verify(values);
-  }
-
-  @Test(expected = SchemaException.class)
-  @Category(StudentTest.class)
-  public void testLongFieldLength() throws SchemaException {
-    Schema schema = TestUtils.createSchemaWithAllTypes();
-    List<DataBox> values = new ArrayList<DataBox>();
-
-    values.add(new BoolDataBox(true));
-    values.add(new IntDataBox(10));
-    values.add(new StringDataBox("abcdef", 6));
-    values.add(new FloatDataBox(10));
-
-    schema.verify(values);
-  }
-
-  @Test
-  @Category(StudentTest.class)
-  public void testCorrectFields() throws SchemaException {
-    Schema schema = TestUtils.createSchemaWithAllTypes();
-    List<DataBox> values = new ArrayList<DataBox>();
-
-    values.add(new BoolDataBox(true));
-    values.add(new IntDataBox(10));
-    values.add(new StringDataBox("abcde", 5));
-    values.add(new FloatDataBox(10));
-
-    schema.verify(values);
-  }
-
-  @Test(expected = SchemaException.class)
-  @Category(StudentTest.class)
-  public void testPermutedFields() throws SchemaException {
-    Schema schema = TestUtils.createSchemaWithAllTypes();
-    List<DataBox> values = new ArrayList<DataBox>();
-
-    values.add(new IntDataBox(10));
-    values.add(new BoolDataBox(true));
-    values.add(new FloatDataBox(10));
-    values.add(new StringDataBox("abcde", 5));
 
     schema.verify(values);
   }

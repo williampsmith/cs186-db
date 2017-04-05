@@ -1,6 +1,9 @@
 package edu.berkeley.cs186.database.query;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.junit.rules.Timeout;
+import org.junit.Rule;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -8,6 +11,8 @@ import java.util.List;
 
 import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.TestUtils;
+import edu.berkeley.cs186.database.StudentTest;
+import edu.berkeley.cs186.database.StudentTestP3;
 import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.databox.FloatDataBox;
 import edu.berkeley.cs186.database.databox.IntDataBox;
@@ -16,7 +21,10 @@ import edu.berkeley.cs186.database.table.Schema;
 
 import static org.junit.Assert.*;
 
-public class SelectOperatorTest {
+public class TestProjectOperator {
+
+  @Rule
+  public Timeout globalTimeout = Timeout.seconds(1); // 1 seconds max per method tested
 
   @Test
   public void testSelectOperatorSchema() throws QueryPlanException {
@@ -24,7 +32,7 @@ public class SelectOperatorTest {
     List<String> columnNames = new ArrayList<String>();
     columnNames.add("int");
 
-    SelectOperator selectOperator = new SelectOperator(sourceOperator, columnNames, false, null, null);
+    ProjectOperator projectOperator = new ProjectOperator(sourceOperator, columnNames, false, null, null);
 
     List<String> outputSchemaNames = new ArrayList<String>();
     outputSchemaNames.add("int");
@@ -32,18 +40,18 @@ public class SelectOperatorTest {
     outputSchemaTypes.add(new IntDataBox());
     Schema expectedSchema = new Schema(outputSchemaNames, outputSchemaTypes);
 
-    assertEquals(expectedSchema, selectOperator.getOutputSchema());
+    assertEquals(expectedSchema, projectOperator.getOutputSchema());
   }
 
   @Test
-  public void testSelectCorrectColumns() throws QueryPlanException, DatabaseException {
+  public void testProjectCorrectColumns() throws QueryPlanException, DatabaseException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     List<String> columnNames = new ArrayList<String>();
     columnNames.add("int");
 
-    SelectOperator selectOperator = new SelectOperator(sourceOperator, columnNames, false, null, null);
+    ProjectOperator projectOperator = new ProjectOperator(sourceOperator, columnNames, false, null, null);
 
-    Iterator<Record> outputRecords = selectOperator.execute();
+    Iterator<Record> outputRecords = projectOperator.execute();
     List<Record> recordList = new ArrayList<Record>();
 
     while (outputRecords.hasNext()) {
@@ -56,15 +64,15 @@ public class SelectOperatorTest {
   }
 
   @Test
-  public void testSelectMultipleColumns() throws QueryPlanException, DatabaseException {
+  public void testProjectMultipleColumns() throws QueryPlanException, DatabaseException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     List<String> columnNames = new ArrayList<String>();
     columnNames.add("int");
     columnNames.add("string");
 
-    SelectOperator selectOperator = new SelectOperator(sourceOperator, columnNames, false, null, null);
+    ProjectOperator projectOperator = new ProjectOperator(sourceOperator, columnNames, false, null, null);
 
-    Iterator<Record> outputRecords = selectOperator.execute();
+    Iterator<Record> outputRecords = projectOperator.execute();
     List<Record> recordList = new ArrayList<Record>();
 
     while (outputRecords.hasNext()) {
@@ -78,22 +86,22 @@ public class SelectOperatorTest {
   }
 
   @Test(expected = QueryPlanException.class)
-  public void testSelectNonexistentColumn() throws QueryPlanException, DatabaseException {
+  public void testProjectNonexistentColumn() throws QueryPlanException, DatabaseException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     List<String> columnNames = new ArrayList<String>();
     columnNames.add("nonexistentColumn");
 
-    new SelectOperator(sourceOperator, columnNames, false, null, null);
+    new ProjectOperator(sourceOperator, columnNames, false, null, null);
   }
 
   @Test
-  public void testSelectCount() throws QueryPlanException, DatabaseException {
+  public void testProjectCount() throws QueryPlanException, DatabaseException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     List<String> columnNames = new ArrayList<String>();
 
-    SelectOperator selectOperator = new SelectOperator(sourceOperator, columnNames, true, null, null);
+    ProjectOperator projectOperator = new ProjectOperator(sourceOperator, columnNames, true, null, null);
 
-    Iterator<Record> outputRecords = selectOperator.execute();
+    Iterator<Record> outputRecords = projectOperator.execute();
     List<Record> recordList = new ArrayList<Record>();
 
     List<String> outputSchemaNames = new ArrayList<String>();
@@ -102,7 +110,7 @@ public class SelectOperatorTest {
     outputSchemaTypes.add(new IntDataBox());
     Schema expectedSchema = new Schema(outputSchemaNames, outputSchemaTypes);
 
-    assertEquals(expectedSchema, selectOperator.getOutputSchema());
+    assertEquals(expectedSchema, projectOperator.getOutputSchema());
 
     while (outputRecords.hasNext()) {
       recordList.add(outputRecords.next());
@@ -113,13 +121,13 @@ public class SelectOperatorTest {
   }
 
   @Test
-  public void testSelectIntegerSum() throws QueryPlanException, DatabaseException {
+  public void testProjectIntegerSum() throws QueryPlanException, DatabaseException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     List<String> columnNames = new ArrayList<String>();
 
-    SelectOperator selectOperator = new SelectOperator(sourceOperator, columnNames, false, null, "int");
+    ProjectOperator projectOperator = new ProjectOperator(sourceOperator, columnNames, false, null, "int");
 
-    Iterator<Record> outputRecords = selectOperator.execute();
+    Iterator<Record> outputRecords = projectOperator.execute();
     List<Record> recordList = new ArrayList<Record>();
 
     List<String> outputSchemaNames = new ArrayList<String>();
@@ -128,7 +136,7 @@ public class SelectOperatorTest {
     outputSchemaTypes.add(new IntDataBox());
     Schema expectedSchema = new Schema(outputSchemaNames, outputSchemaTypes);
 
-    assertEquals(expectedSchema, selectOperator.getOutputSchema());
+    assertEquals(expectedSchema, projectOperator.getOutputSchema());
 
     while (outputRecords.hasNext()) {
       recordList.add(outputRecords.next());
@@ -139,7 +147,7 @@ public class SelectOperatorTest {
   }
 
   @Test
-  public void testSelectAverage() throws QueryPlanException, DatabaseException {
+  public void testProjectAverage() throws QueryPlanException, DatabaseException {
     List<Integer> values = new ArrayList<Integer>();
     int sum = 0;
 
@@ -149,8 +157,8 @@ public class SelectOperatorTest {
     }
 
     TestSourceOperator sourceOperator = TestUtils.createTestSourceOperatorWithInts(values);
-    SelectOperator selectOperator =  new SelectOperator(sourceOperator, new ArrayList<String>(), false, "int", null);
-    Iterator<Record> outputRecords = selectOperator.execute();
+    ProjectOperator projectOperator =  new ProjectOperator(sourceOperator, new ArrayList<String>(), false, "int", null);
+    Iterator<Record> outputRecords = projectOperator.execute();
 
     List<String> outputSchemaNames = new ArrayList<String>();
     outputSchemaNames.add("averageAgg");
@@ -158,7 +166,7 @@ public class SelectOperatorTest {
     outputSchemaTypes.add(new FloatDataBox());
     Schema expectedSchema = new Schema(outputSchemaNames, outputSchemaTypes);
 
-    assertEquals(expectedSchema, selectOperator.getOutputSchema());
+    assertEquals(expectedSchema, projectOperator.getOutputSchema());
 
     List<Record> recordList = new ArrayList<Record>();
     while (outputRecords.hasNext()) {
@@ -172,13 +180,13 @@ public class SelectOperatorTest {
   }
 
   @Test
-  public void testSelectFloatSum() throws QueryPlanException, DatabaseException {
+  public void testProjectFloatSum() throws QueryPlanException, DatabaseException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     List<String> columnNames = new ArrayList<String>();
 
-    SelectOperator selectOperator = new SelectOperator(sourceOperator, columnNames, false, null, "float");
+    ProjectOperator projectOperator = new ProjectOperator(sourceOperator, columnNames, false, null, "float");
 
-    Iterator<Record> outputRecords = selectOperator.execute();
+    Iterator<Record> outputRecords = projectOperator.execute();
     List<Record> recordList = new ArrayList<Record>();
 
     List<String> outputSchemaNames = new ArrayList<String>();
@@ -187,7 +195,7 @@ public class SelectOperatorTest {
     outputSchemaTypes.add(new FloatDataBox());
     Schema expectedSchema = new Schema(outputSchemaNames, outputSchemaTypes);
 
-    assertEquals(expectedSchema, selectOperator.getOutputSchema());
+    assertEquals(expectedSchema, projectOperator.getOutputSchema());
 
     while (outputRecords.hasNext()) {
       recordList.add(outputRecords.next());
@@ -198,7 +206,7 @@ public class SelectOperatorTest {
   }
 
   @Test
-  public void testSelectAllAggregates() throws QueryPlanException, DatabaseException {
+  public void testProjectAllAggregates() throws QueryPlanException, DatabaseException {
     List<Integer> values = new ArrayList<Integer>();
     int sum = 0;
 
@@ -208,8 +216,8 @@ public class SelectOperatorTest {
     }
 
     TestSourceOperator sourceOperator = TestUtils.createTestSourceOperatorWithInts(values);
-    SelectOperator selectOperator =  new SelectOperator(sourceOperator, new ArrayList<String>(), true, "int", "int");
-    Iterator<Record> outputRecords = selectOperator.execute();
+    ProjectOperator projectOperator =  new ProjectOperator(sourceOperator, new ArrayList<String>(), true, "int", "int");
+    Iterator<Record> outputRecords = projectOperator.execute();
 
     List<String> outputSchemaNames = new ArrayList<String>();
     outputSchemaNames.add("countAgg");
@@ -221,7 +229,7 @@ public class SelectOperatorTest {
     outputSchemaTypes.add(new FloatDataBox());
     Schema expectedSchema = new Schema(outputSchemaNames, outputSchemaTypes);
 
-    assertEquals(expectedSchema, selectOperator.getOutputSchema());
+    assertEquals(expectedSchema, projectOperator.getOutputSchema());
 
     List<Record> recordList = new ArrayList<Record>();
     while (outputRecords.hasNext()) {
@@ -237,10 +245,10 @@ public class SelectOperatorTest {
   }
 
   @Test(expected = QueryPlanException.class)
-  public void testSelectNonexistentColumnAggregate() throws QueryPlanException {
+  public void testProjectNonexistentColumnAggregate() throws QueryPlanException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     List<String> columnNames = new ArrayList<String>();
 
-    new SelectOperator(sourceOperator, columnNames, false, null, "nonexistentColumn");
+    new ProjectOperator(sourceOperator, columnNames, false, null, "nonexistentColumn");
   }
 }

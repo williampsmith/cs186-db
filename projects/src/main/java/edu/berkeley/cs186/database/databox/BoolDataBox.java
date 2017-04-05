@@ -63,6 +63,11 @@ public class BoolDataBox extends DataBox {
     return Boolean.compare(this.getBool(),other.getBool()) == 0;
   }
 
+  @Override
+  public int hashCode() {
+    return this.getBool() ? 1 : 0;
+  }
+
   public int compareTo(Object obj) {
     if (this.getClass() != obj.getClass()) {
       throw new DataBoxException("Invalid Comparsion");

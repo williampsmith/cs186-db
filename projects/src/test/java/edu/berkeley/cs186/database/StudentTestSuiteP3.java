@@ -1,6 +1,7 @@
 package edu.berkeley.cs186.database;
 
 import edu.berkeley.cs186.database.databox.*;
+import edu.berkeley.cs186.database.index.*;
 import edu.berkeley.cs186.database.io.*;
 import edu.berkeley.cs186.database.query.*;
 import edu.berkeley.cs186.database.table.stats.*;
@@ -19,12 +20,13 @@ import edu.berkeley.cs186.database.table.TestSchema;
  * DO NOT CHANGE ANY OF THIS CODE.
  */
 @RunWith(Categories.class)
-@IncludeCategory(StudentTest.class)
+@IncludeCategory(StudentTestP3.class)
 @SuiteClasses({
         TestBoolDataBox.class,
         TestFloatDataBox.class,
         TestIntDataBox.class,
         TestStringDataBox.class,
+        TestLargeBPlusTree.class,
         TestLRUCache.class,
         TestPage.class,
         TestPageAllocator.class,
@@ -45,4 +47,4 @@ import edu.berkeley.cs186.database.table.TestSchema;
         TestDatabase.class,
         TestDatabaseQueries.class
 })
-public class StudentTestSuite {}
+public class StudentTestSuiteP3 {}

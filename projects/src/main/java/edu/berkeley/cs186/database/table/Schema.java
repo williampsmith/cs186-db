@@ -1,15 +1,11 @@
 package edu.berkeley.cs186.database.table;
 
 import edu.berkeley.cs186.database.databox.*;
-import edu.berkeley.cs186.database.io.Page;
-import sun.nio.cs.StandardCharsets;
 
-import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.*;
-import java.io.ByteArrayInputStream;
+import java.util.List;
 
 /**
  * The Schema of a particular table.
@@ -31,7 +27,6 @@ public class Schema {
     this.fieldTypes = fieldTypes;
     this.size = 0;
 
-
     for (DataBox dt : fieldTypes) {
       this.size += dt.getSize();
     }
@@ -48,22 +43,25 @@ public class Schema {
    * @throws SchemaException if the values specified don't conform to this Schema
    */
   public Record verify(List<DataBox> values) throws SchemaException {
-    if (this.fieldTypes.size() != values.size()) {
-      throw new SchemaException("Size of record does not match size of schema for this table");
+    if (values.size() != this.fieldTypes.size()) {
+      throw new SchemaException("Different numbers of fields specified.");
     }
 
     for (int i = 0; i < values.size(); i++) {
-      if (values.get(i).type() != this.fieldTypes.get(i).type() ||
-              values.get(i).getSize() != this.fieldTypes.get(i).getSize()) {
-        throw new SchemaException("Values do not match schema.");
+      DataBox valueType = values.get(i);
+      DataBox fieldType = this.fieldTypes.get(i);
+
+      if (!(valueType.type().equals(fieldType.type()))) {
+        throw new SchemaException("Field " + i + " is " + valueType.type() + " instead of " + fieldType.type() + ".");
+      }
+
+      if (valueType.getSize() != fieldType.getSize()) {
+        throw new SchemaException("Field " + i + " is " + valueType.getSize() + " bytes instead of " + fieldType.getString() + " bytes.");
       }
     }
 
     return new Record(values);
   }
-
-  // addon
-  public int getSize() { return this.size; }
 
   /**
    * Serializes the provided record into a byte[]. Uses the DataBoxes'
@@ -75,19 +73,13 @@ public class Schema {
    * @return the encoded record as a byte[]
    */
   public byte[] encode(Record record) {
-    // get size of concatenated array
-    int totalLen = 0;
+    ByteBuffer byteBuffer = ByteBuffer.allocate(this.size);
+
     for (DataBox value : record.getValues()) {
-      totalLen += value.getSize();
+      byteBuffer.put(value.getBytes());
     }
 
-    ByteBuffer serialization = ByteBuffer.allocate(totalLen);
-    for (DataBox value : record.getValues()) {
-      byte[] serializedValue = value.getBytes();
-      serialization.put(serializedValue);
-    }
-
-    return serialization.array();
+    return byteBuffer.array();
   }
 
   /**
@@ -98,45 +90,30 @@ public class Schema {
    * @return the decoded Record
    */
   public Record decode(byte[] input) {
-    int i = 0;
+    int offset = 0;
+
     List<DataBox> values = new ArrayList<DataBox>();
-    ByteArrayInputStream bytes;
-    ObjectInputStream obj;
+    for (DataBox field : fieldTypes) {
+      byte[] fieldBytes = Arrays.copyOfRange(input, offset, offset + field.getSize());
+      offset += field.getSize();
 
-    for (DataBox dataBox : this.fieldTypes) {
-      byte[] subArray = Arrays.copyOfRange(input, i, i + dataBox.getSize());
-      i += dataBox.getSize();
-
-      DataBox.Types type = dataBox.type();
-
-      DataBox field;
-
-      switch(type) {
-        case INT:
-          field = new IntDataBox(subArray);
-          break;
+      switch (field.type()) {
         case STRING:
-
-          field = new StringDataBox(subArray);
+          values.add(new StringDataBox(fieldBytes));
           break;
-        case BOOL:
-          field = new BoolDataBox(subArray);
+        case INT:
+          values.add(new IntDataBox(fieldBytes));
           break;
         case FLOAT:
-        default:
-          field = new FloatDataBox(subArray);
+          values.add(new FloatDataBox(fieldBytes));
+          break;
+        case BOOL:
+          values.add(new BoolDataBox(fieldBytes));
           break;
       }
-
-      values.add(field);
     }
 
-    try {
-      return this.verify(values);
-    } catch (Exception e){
-      System.out.println("Error. schema fails verification " + e.getMessage());
-      return null;
-    }
+    return new Record(values);
   }
 
   public int getEntrySize() {

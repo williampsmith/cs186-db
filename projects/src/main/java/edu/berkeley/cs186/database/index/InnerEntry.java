@@ -4,8 +4,6 @@ import edu.berkeley.cs186.database.databox.*;
 
 import java.util.Arrays;
 import java.nio.ByteBuffer;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * A B+ tree inner node entry.

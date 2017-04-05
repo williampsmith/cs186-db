@@ -339,7 +339,6 @@ public class PageAllocator implements Iterable<Page>, Closeable {
     return (int) ((vPageNum & 0xFFFFFFFF00000000L) >> 32);
   }
 
-
   /**
    * @return an iterator of the valid pages managed by this PageAllocator.
    */

@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 /**
- * Represents the ID of a single record. Stores the id of a page and the slot number where this
+ * Represents the ID of a single record. Stores the id of a page and the slot number select this
  * record lives within that page.
  */
 public class RecordID {

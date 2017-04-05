@@ -63,7 +63,7 @@ public class TestDatabaseQueries {
     List<String> columns = new ArrayList<String>();
     columns.add("S.name");
     columns.add("C.name");
-    queryPlan.select(columns);
+    queryPlan.project(columns);
 
     Iterator<Record> recordIterator = queryPlan.execute();
 
@@ -75,7 +75,6 @@ public class TestDatabaseQueries {
 
     assertEquals(1000, count);
   }
-
 
   private static void createSchemas() throws DatabaseException {
     List<String> studentSchemaNames = new ArrayList<String>();

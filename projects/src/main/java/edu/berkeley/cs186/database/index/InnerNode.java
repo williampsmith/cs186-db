@@ -3,9 +3,9 @@ package edu.berkeley.cs186.database.index;
 import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.io.Page;
 import edu.berkeley.cs186.database.table.RecordID;
-import edu.berkeley.cs186.database.index.BPlusTree.NodeData;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * An inner node of a B+ tree. An InnerNode header contains an `isLeaf` flag
@@ -53,36 +53,16 @@ public class InnerNode extends BPlusNode {
      * contains the given key
      */
     public int findChildFromKey(DataBox key) {
-        int keyPage = getFirstChild();  // Default keyPage
-        List<BEntry> entries = getAllValidEntries();
-        for (BEntry ent : entries) {
-            if (key.compareTo(ent.getKey()) < 0) {
+        int childToTraverse = getFirstChild();
+        List<BEntry> validEntries = getAllValidEntries();
+        for (BEntry entry : validEntries) {
+            if (key.compareTo(entry.getKey()) < 0) {
                 break;
+            } else {
+                childToTraverse = entry.getPageNum();
             }
-            keyPage = ent.getPageNum();
         }
-        return keyPage;
-    }
-
-    /**
-     * Helper: overloaded function to handle tracking index
-     * @param key the given key
-     * @param data the NodeData object with index to update
-     * @return page number of the child of this InnerNode whose subtree
-     * contains the given key
-     */
-    public int findChildFromKey(DataBox key, NodeData data) {
-        data.setIndex(-1);
-        int keyPage = getFirstChild();  // Default keyPage
-        List<BEntry> entries = getAllValidEntries();
-        for (BEntry ent : entries) {
-            if (key.compareTo(ent.getKey()) <= 0) {
-                break;
-            }
-            keyPage = ent.getPageNum();
-            data.incrementIndex();
-        }
-        return keyPage;
+        return childToTraverse;
     }
 
     /**
@@ -93,46 +73,23 @@ public class InnerNode extends BPlusNode {
      * as a result of this InnerNode being split, null otherwise
      */
     public InnerEntry insertBEntry(LeafEntry ent) {
-        // Implement me!
-        DataBox key = ent.getKey();
-        int childPID = this.findChildFromKey(key);
-        BPlusNode child = BPlusNode.getBPlusNode(this.getTree(), childPID);
-//        System.out.println("Child is leaf: " + child.isLeaf());
-        InnerEntry pushupEntry = child.insertBEntry(ent);
+        int childPageNum = findChildFromKey(ent.getKey());
+        BPlusNode childNode = getBPlusNode(getTree(), childPageNum);
+        InnerEntry pushedEntry = childNode.insertBEntry(ent);
 
-        if (pushupEntry != null) { // need to insert innerNode into self
-            if (this.hasSpace()) {
-                List<BEntry> newEntries = this.insertOrdered(pushupEntry);
-                this.overwriteBNodeEntries(newEntries);
+        if (pushedEntry != null) {
+            if (hasSpace()) {
+                List<BEntry> validEntries = getAllValidEntries();
+                validEntries.add(pushedEntry);
+                Collections.sort(validEntries);
+                overwriteBNodeEntries(validEntries);
                 return null;
-            } else { // need to split, create new entry pointing to self, and return it
-                return this.splitNode(pushupEntry);
+            } else {
+                return splitNode(pushedEntry);
             }
+        } else {
+            return null;
         }
-        return null;
-    }
-
-    /**
-     * Helper function to insert into list array in sorted order
-     * @param entry the entry to be inserted
-     */
-    public List<BEntry> insertOrdered(BEntry entry) {
-        List<BEntry> leafEntries = this.getAllValidEntries();
-        int i = 0;
-
-        for (BEntry leafEntry : leafEntries) {
-            if (entry.compareTo(leafEntry) == -1) { // entry less than leafEntry
-                leafEntries.add(i, entry);
-                break;
-            }
-            i++;
-        }
-
-        if (i == leafEntries.size()) { // insert into the end
-            leafEntries.add(entry);
-        }
-
-        return leafEntries;
     }
 
     /**
@@ -147,21 +104,22 @@ public class InnerNode extends BPlusNode {
      */
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
-        List<BEntry> nodeEntries = this.insertOrdered(newEntry);
-        int len = nodeEntries.size();
+        List<BEntry> validEntries = getAllValidEntries();
+        validEntries.add(newEntry);
+        Collections.sort(validEntries);
 
-        // handle left node
-        List<BEntry> leftEntries = nodeEntries.subList(0, len / 2);
-        this.overwriteBNodeEntries(leftEntries);
+        List<BEntry> leftNodeEntries = validEntries.subList(0, validEntries.size()/2);
+        BEntry middleEntry = validEntries.get(validEntries.size()/2);
+        List<BEntry> rightNodeEntries = validEntries.subList(validEntries.size()/2 + 1, validEntries.size());
 
-        // handle right node
-        List<BEntry> rightEntries = nodeEntries.subList((len + 1)/ 2, len);
-        InnerNode rightNode = new InnerNode(this.getTree());
-        rightNode.setFirstChild(nodeEntries.get(len / 2).getPageNum());
-        rightNode.overwriteBNodeEntries(rightEntries);
+        overwriteBNodeEntries(leftNodeEntries);
 
-        // increment node count, point center entry to right node
-//        this.getTree().incrementNumNodes();
-        return new InnerEntry(nodeEntries.get(len / 2).key, rightNode.getPageNum());
+        InnerNode rightNode = new InnerNode(getTree());
+        rightNode.setFirstChild(middleEntry.getPageNum());
+        rightNode.overwriteBNodeEntries(rightNodeEntries);
+
+        InnerEntry newMiddleEntry = new InnerEntry(middleEntry.getKey(), rightNode.getPageNum());
+
+        return newMiddleEntry;
     }
 }

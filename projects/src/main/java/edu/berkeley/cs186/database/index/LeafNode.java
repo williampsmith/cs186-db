@@ -46,36 +46,15 @@ public class LeafNode extends BPlusNode {
      */
     @Override
     public InnerEntry insertBEntry(LeafEntry ent) {
-        if (this.hasSpace()) {
-            List<BEntry> newEntries = this.insertOrdered(ent);
-            this.overwriteBNodeEntries(newEntries);
+        if (hasSpace()) {
+            List<BEntry> validEntries = getAllValidEntries();
+            validEntries.add(ent);
+            Collections.sort(validEntries);
+            overwriteBNodeEntries(validEntries);
             return null;
-        } else { // need to split, create new entry pointing to self, and return it
-            return this.splitNode(ent);
+        } else {
+            return splitNode(ent);
         }
-    }
-
-    /**
-     * Helper function to insert into node in sorted order
-     * @param entry the entry to be inserted
-     */
-    public List<BEntry> insertOrdered(BEntry entry) {
-        List<BEntry> nodeEntries = this.getAllValidEntries();
-        int i = 0;
-
-        for (BEntry nodeEntry : nodeEntries) {
-            if (entry.compareTo(nodeEntry) == -1) { // entry less than nodeEntry
-                nodeEntries.add(i, entry);
-                break;
-            }
-            i++;
-        }
-
-        if (i == nodeEntries.size()) { // insert into the end
-            nodeEntries.add(entry);
-        }
-
-        return nodeEntries;
     }
 
     /**
@@ -90,44 +69,22 @@ public class LeafNode extends BPlusNode {
      */
     @Override
     public InnerEntry splitNode(BEntry newEntry) {
-        // Implement me!
-        List<BEntry> nodeEntries = this.insertOrdered(newEntry); // insert into list
-        int len = nodeEntries.size();
+        List<BEntry> validEntries = getAllValidEntries();
+        validEntries.add(newEntry);
+        Collections.sort(validEntries);
 
-        // handle left node
-        List<BEntry> leftEntries = nodeEntries.subList(0, len / 2);
-        this.overwriteBNodeEntries(leftEntries);
+        List<BEntry> leftNodeEntries = validEntries.subList(0, validEntries.size()/2);
+        BEntry middleEntry = validEntries.get(validEntries.size()/2);
+        List<BEntry> rightNodeEntries = validEntries.subList(validEntries.size()/2, validEntries.size());
 
-        // handle right node
-        List<BEntry> rightEntries = nodeEntries.subList((len / 2), len);
-        LeafNode rightNode = new LeafNode(this.getTree());
-        rightNode.overwriteBNodeEntries(rightEntries);
+        overwriteBNodeEntries(leftNodeEntries);
 
-        // increment node count, point center entry to right node
-//        this.getTree().incrementNumNodes();
-        return new InnerEntry(nodeEntries.get(len / 2).key, rightNode.getPageNum());
-    }
+        LeafNode rightNode = new LeafNode(getTree());
+        rightNode.overwriteBNodeEntries(rightNodeEntries);
 
-    public InnerEntry splitNodeCheck(BEntry newEntry) {
-        // DONE
-        int totalNumEntries = this.numEntries + 1;
-        int d = totalNumEntries / 2;
-        List<BEntry> allEntriesSorted = this.insertOrdered(newEntry);
-        List<BEntry> leftEntries = new ArrayList<BEntry>();
-        List<BEntry> rightEntries = new ArrayList<BEntry>();
+        InnerEntry newMiddleEntry = new InnerEntry(middleEntry.getKey(), rightNode.getPageNum());
 
-        for (int i = 0; i < d; i++) {
-            leftEntries.add(allEntriesSorted.get(i));
-        }
-        for (int i = d; i < totalNumEntries; i++) {
-            rightEntries.add(allEntriesSorted.get(i));
-        }
-
-        this.overwriteBNodeEntries(leftEntries);
-        LeafNode newRightLeafNode = new LeafNode(this.getTree());
-        newRightLeafNode.overwriteBNodeEntries(rightEntries);
-
-        return new InnerEntry(rightEntries.get(0).getKey(), newRightLeafNode.getPageNum());
+        return newMiddleEntry;
     }
 
 
