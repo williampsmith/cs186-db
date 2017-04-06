@@ -144,9 +144,12 @@ For `GraceHashOperator`, always use the left table to build the hash table.
 #### 1.2 Index Scan Operator
 
 Next, implement an iterator for `IndexScanOperator` that supports the predicates (`EQUALS`,
-`NOT_EQUALS`, `LESS_THAN`, `LESS_THAN_EQUALS`, `GREATER_THAN`, `GREATER_THAN_EQUALS`) on
+ `LESS_THAN`, `LESS_THAN_EQUALS`, `GREATER_THAN`, `GREATER_THAN_EQUALS`) on
 the given index.
 These predicates are part of the enum `PredicateOperator` found in the class `QueryPlan`.
+
+Update: You don't have to implement `NOT_EQUALS`; if you have already done,
+you get 1 extra credit.
 
 ### Part 2: Testing
 
