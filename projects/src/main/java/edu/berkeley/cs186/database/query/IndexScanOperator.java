@@ -71,9 +71,44 @@ public class IndexScanOperator extends QueryOperator {
    */
   private class IndexScanIterator implements Iterator<Record> {
     /* TODO: Implement the IndexScanIterator */
+    private Iterator<Record> recordIterator;
+    private boolean done;
+    private boolean implemented;
+    private Record nextRecord;
 
     public IndexScanIterator() throws QueryPlanException, DatabaseException {
-      /* TODO */
+      IndexScanOperator iso = IndexScanOperator.this;
+      // TODO: test this
+      if (!iso.transaction.indexExists(iso.tableName, iso.columnName)) {
+        this.done = true;
+        throw new QueryPlanException("Error. Index does not exist for column " + iso.columnName +
+                                     "of table " + iso.tableName);
+      }
+
+      if (iso.predicate == QueryPlan.PredicateOperator.EQUALS) {
+        recordIterator = iso.transaction.lookupKey(iso.tableName, iso.columnName, iso.value);
+        this.implemented = true;
+      } else if (iso.predicate == QueryPlan.PredicateOperator.GREATER_THAN_EQUALS) {
+        recordIterator = iso.transaction.sortedScan(iso.tableName, iso.columnName);
+        this.implemented = true;
+      } else if (iso.predicate == QueryPlan.PredicateOperator.GREATER_THAN) {
+        this.recordIterator = null;
+        this.implemented = false;
+      } else if (iso.predicate == QueryPlan.PredicateOperator.LESS_THAN) {
+        this.recordIterator = null;
+        this.implemented = false;
+      } else if (iso.predicate == QueryPlan.PredicateOperator.LESS_THAN_EQUALS) {
+        this.recordIterator = null;
+        this.implemented = false;
+      } else if (iso.predicate == QueryPlan.PredicateOperator.NOT_EQUALS) {
+        this.recordIterator = null;
+        this.implemented = false;
+      } else {
+        System.out.println("Error: Did not recognize index scan predicate.");
+      }
+
+      this.done = false;
+      this.nextRecord = null;
     }
 
     /**
@@ -83,7 +118,72 @@ public class IndexScanOperator extends QueryOperator {
      */
     public boolean hasNext() {
       /* TODO */
-      return false;
+      IndexScanOperator iso = IndexScanOperator.this;
+      if (this.implemented) {
+        return this.recordIterator.hasNext();
+      }
+
+      // TODO check this ordering
+      if (this.nextRecord != null) {
+        return true;
+      }
+
+      // TODO check this ordering
+      if (this.done) {
+        return false;
+      }
+
+      while (true) {
+        if (!this.recordIterator.hasNext()) {
+          done = true;
+          return false;
+        }
+        this.nextRecord = this.recordIterator.next();
+        int comparison = this.compareRecord(this.nextRecord);
+
+        if (iso.predicate == QueryPlan.PredicateOperator.GREATER_THAN) {
+          if (comparison == 1) {
+            return true;
+          }
+          // otherwise, go to next record
+          this.nextRecord = null;
+          continue;
+        }
+
+        if (iso.predicate == QueryPlan.PredicateOperator.LESS_THAN) {
+          if (comparison == -1) {
+            return true;
+          }
+          // otherwise, go to next record
+          this.nextRecord = null;
+          this.done = true;
+          continue;
+        }
+
+        if (iso.predicate == QueryPlan.PredicateOperator.LESS_THAN_EQUALS) {
+          if (comparison == -1 || comparison == 0) {
+            return true;
+          }
+          // otherwise, go to next record
+          this.nextRecord = null;
+          this.done = true;
+          continue;
+        }
+
+        if (iso.predicate == QueryPlan.PredicateOperator.NOT_EQUALS) {
+          if (comparison == -1 || comparison == 1) {
+            return true;
+          }
+          // otherwise, go to next record
+          this.nextRecord = null;
+          continue;
+        }
+      }
+    }
+
+    public int compareRecord(Record record) {
+      IndexScanOperator iso = IndexScanOperator.this;
+      return record.getValues().get(iso.columnIndex).compareTo(iso.value);
     }
 
     /**
@@ -93,8 +193,17 @@ public class IndexScanOperator extends QueryOperator {
      * @throws NoSuchElementException if there are no more Records to yield
      */
     public Record next() {
-      /* TODO */
-      throw new NoSuchElementException();
+      if (this.implemented) {
+        return this.recordIterator.next();
+      }
+      else {
+        if (this.hasNext()) {
+          Record r = this.nextRecord;
+          this.nextRecord = null;
+          return r;
+        }
+        throw new NoSuchElementException();
+      }
     }
 
     public void remove() {
