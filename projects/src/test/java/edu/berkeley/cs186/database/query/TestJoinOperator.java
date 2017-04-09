@@ -453,6 +453,7 @@ public class TestJoinOperator {
           }
           count++;
         }
+
         assertTrue(count == 333*333*3);
     }
 
