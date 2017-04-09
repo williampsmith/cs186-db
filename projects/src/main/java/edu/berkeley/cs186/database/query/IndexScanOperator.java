@@ -70,7 +70,7 @@ public class IndexScanOperator extends QueryOperator {
    * An implementation of Iterator that provides an iterator interface for this operator.
    */
   private class IndexScanIterator implements Iterator<Record> {
-    /* TODO: Implement the IndexScanIterator */
+    /* Done */
     private Iterator<Record> recordIterator;
     private boolean done;
     private boolean implemented;
@@ -78,7 +78,6 @@ public class IndexScanOperator extends QueryOperator {
 
     public IndexScanIterator() throws QueryPlanException, DatabaseException {
       IndexScanOperator iso = IndexScanOperator.this;
-      // TODO: test this
       if (!iso.transaction.indexExists(iso.tableName, iso.columnName)) {
         this.done = true;
         throw new QueryPlanException("Error. Index does not exist for column " + iso.columnName +
@@ -89,19 +88,19 @@ public class IndexScanOperator extends QueryOperator {
         recordIterator = iso.transaction.lookupKey(iso.tableName, iso.columnName, iso.value);
         this.implemented = true;
       } else if (iso.predicate == QueryPlan.PredicateOperator.GREATER_THAN_EQUALS) {
-        recordIterator = iso.transaction.sortedScan(iso.tableName, iso.columnName);
+        recordIterator = iso.transaction.sortedScanFrom(iso.tableName, iso.columnName, iso.value);
         this.implemented = true;
       } else if (iso.predicate == QueryPlan.PredicateOperator.GREATER_THAN) {
-        this.recordIterator = null;
+        this.recordIterator = iso.transaction.sortedScan(iso.tableName, iso.columnName);
         this.implemented = false;
       } else if (iso.predicate == QueryPlan.PredicateOperator.LESS_THAN) {
-        this.recordIterator = null;
+        this.recordIterator = iso.transaction.sortedScan(iso.tableName, iso.columnName);
         this.implemented = false;
       } else if (iso.predicate == QueryPlan.PredicateOperator.LESS_THAN_EQUALS) {
-        this.recordIterator = null;
+        this.recordIterator = iso.transaction.sortedScan(iso.tableName, iso.columnName);
         this.implemented = false;
       } else if (iso.predicate == QueryPlan.PredicateOperator.NOT_EQUALS) {
-        this.recordIterator = null;
+        this.recordIterator = iso.transaction.sortedScan(iso.tableName, iso.columnName);
         this.implemented = false;
       } else {
         System.out.println("Error: Did not recognize index scan predicate.");
@@ -117,18 +116,16 @@ public class IndexScanOperator extends QueryOperator {
      * @return true if this iterator has another record to yield, otherwise false
      */
     public boolean hasNext() {
-      /* TODO */
+      /* DONE */
       IndexScanOperator iso = IndexScanOperator.this;
       if (this.implemented) {
         return this.recordIterator.hasNext();
       }
 
-      // TODO check this ordering
       if (this.nextRecord != null) {
         return true;
       }
 
-      // TODO check this ordering
       if (this.done) {
         return false;
       }

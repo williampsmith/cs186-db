@@ -34,7 +34,7 @@ public class BNLJOperator extends JoinOperator {
    * An implementation of Iterator that provides an iterator interface for this operator.
    */
   private class BNLJIterator implements Iterator<Record> {
-    /* TODO: Implement the BNLJIterator */
+    /* DONE */
     private int blockSize;
     private String leftTableName;
     private String rightTableName;

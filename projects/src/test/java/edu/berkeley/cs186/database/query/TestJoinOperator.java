@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.TestUtils;
@@ -453,5 +454,117 @@ public class TestJoinOperator {
           count++;
         }
         assertTrue(count == 333*333*3);
+    }
+
+    @Test(expected= NoSuchElementException.class)
+    @Category(StudentTestP3.class)
+    public void testGHJWithoutHasNextCall() throws QueryPlanException, DatabaseException, IOException {
+        TestSourceOperator sourceOperator = new TestSourceOperator();
+        File tempDir = tempFolder.newFolder("joinTest");
+        Database.Transaction transaction = new Database(tempDir.getAbsolutePath()).beginTransaction();
+
+        List<DataBox> expectedRecordValues = new ArrayList<DataBox>();
+        expectedRecordValues.add(new BoolDataBox(true));
+        expectedRecordValues.add(new IntDataBox(1));
+        expectedRecordValues.add(new StringDataBox("abcde", 5));
+        expectedRecordValues.add(new FloatDataBox(1.2f));
+        expectedRecordValues.add(new BoolDataBox(true));
+        expectedRecordValues.add(new IntDataBox(1));
+        expectedRecordValues.add(new StringDataBox("abcde", 5));
+        expectedRecordValues.add(new FloatDataBox(1.2f));
+        Record expectedRecord = new Record(expectedRecordValues);
+
+        JoinOperator joinOperator = new GraceHashOperator(sourceOperator, sourceOperator, "int", "int", transaction);
+        Iterator<Record> outputIterator = joinOperator.iterator();
+
+        for (int i = 0; i < 100*100; i++) {
+            assertEquals(expectedRecord, outputIterator.next());
+        }
+
+        outputIterator.next(); // should throw NoSuchElementException
+    }
+
+    @Test(expected= NoSuchElementException.class)
+    @Category(StudentTestP3.class)
+    public void testSMJWithoutHasNextCall() throws QueryPlanException, DatabaseException, IOException {
+        TestSourceOperator sourceOperator = new TestSourceOperator();
+        File tempDir = tempFolder.newFolder("joinTest");
+        Database.Transaction transaction = new Database(tempDir.getAbsolutePath()).beginTransaction();
+
+        List<DataBox> expectedRecordValues = new ArrayList<DataBox>();
+        expectedRecordValues.add(new BoolDataBox(true));
+        expectedRecordValues.add(new IntDataBox(1));
+        expectedRecordValues.add(new StringDataBox("abcde", 5));
+        expectedRecordValues.add(new FloatDataBox(1.2f));
+        expectedRecordValues.add(new BoolDataBox(true));
+        expectedRecordValues.add(new IntDataBox(1));
+        expectedRecordValues.add(new StringDataBox("abcde", 5));
+        expectedRecordValues.add(new FloatDataBox(1.2f));
+        Record expectedRecord = new Record(expectedRecordValues);
+
+        JoinOperator joinOperator = new SortMergeOperator(sourceOperator, sourceOperator, "int", "int", transaction);
+        Iterator<Record> outputIterator = joinOperator.iterator();
+
+        for (int i = 0; i < 100*100; i++) {
+            assertEquals(expectedRecord, outputIterator.next());
+        }
+
+        outputIterator.next(); // should throw NoSuchElementException
+    }
+
+    @Test(expected= NoSuchElementException.class)
+    @Category(StudentTestP3.class)
+    public void testPNLJWithoutHasNextCall() throws QueryPlanException, DatabaseException, IOException {
+        TestSourceOperator sourceOperator = new TestSourceOperator();
+        File tempDir = tempFolder.newFolder("joinTest");
+        Database.Transaction transaction = new Database(tempDir.getAbsolutePath()).beginTransaction();
+
+        List<DataBox> expectedRecordValues = new ArrayList<DataBox>();
+        expectedRecordValues.add(new BoolDataBox(true));
+        expectedRecordValues.add(new IntDataBox(1));
+        expectedRecordValues.add(new StringDataBox("abcde", 5));
+        expectedRecordValues.add(new FloatDataBox(1.2f));
+        expectedRecordValues.add(new BoolDataBox(true));
+        expectedRecordValues.add(new IntDataBox(1));
+        expectedRecordValues.add(new StringDataBox("abcde", 5));
+        expectedRecordValues.add(new FloatDataBox(1.2f));
+        Record expectedRecord = new Record(expectedRecordValues);
+
+        JoinOperator joinOperator = new PNLJOperator(sourceOperator, sourceOperator, "int", "int", transaction);
+        Iterator<Record> outputIterator = joinOperator.iterator();
+
+        for (int i = 0; i < 100*100; i++) {
+            assertEquals(expectedRecord, outputIterator.next());
+        }
+
+        outputIterator.next(); // should throw NoSuchElementException
+    }
+
+    @Test(expected= NoSuchElementException.class)
+    @Category(StudentTestP3.class)
+    public void testBNLJWithoutHasNextCall() throws QueryPlanException, DatabaseException, IOException {
+        TestSourceOperator sourceOperator = new TestSourceOperator();
+        File tempDir = tempFolder.newFolder("joinTest");
+        Database.Transaction transaction = new Database(tempDir.getAbsolutePath()).beginTransaction();
+
+        List<DataBox> expectedRecordValues = new ArrayList<DataBox>();
+        expectedRecordValues.add(new BoolDataBox(true));
+        expectedRecordValues.add(new IntDataBox(1));
+        expectedRecordValues.add(new StringDataBox("abcde", 5));
+        expectedRecordValues.add(new FloatDataBox(1.2f));
+        expectedRecordValues.add(new BoolDataBox(true));
+        expectedRecordValues.add(new IntDataBox(1));
+        expectedRecordValues.add(new StringDataBox("abcde", 5));
+        expectedRecordValues.add(new FloatDataBox(1.2f));
+        Record expectedRecord = new Record(expectedRecordValues);
+
+        JoinOperator joinOperator = new BNLJOperator(sourceOperator, sourceOperator, "int", "int", transaction);
+        Iterator<Record> outputIterator = joinOperator.iterator();
+
+        for (int i = 0; i < 100*100; i++) {
+            assertEquals(expectedRecord, outputIterator.next());
+        }
+
+        outputIterator.next(); // should throw NoSuchElementException
     }
 }
