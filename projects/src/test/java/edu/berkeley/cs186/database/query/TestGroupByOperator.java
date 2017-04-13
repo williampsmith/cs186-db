@@ -16,13 +16,10 @@ import java.util.Set;
 
 import edu.berkeley.cs186.database.Database;
 import edu.berkeley.cs186.database.DatabaseException;
-import edu.berkeley.cs186.database.StudentTest;
-import edu.berkeley.cs186.database.StudentTestP3;
 import edu.berkeley.cs186.database.TestUtils;
 import edu.berkeley.cs186.database.StudentTest;
 import edu.berkeley.cs186.database.table.MarkerRecord;
 import edu.berkeley.cs186.database.table.Record;
-
 
 import static org.junit.Assert.*;
 

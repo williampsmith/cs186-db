@@ -5,6 +5,7 @@ import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.io.Page;
 import edu.berkeley.cs186.database.table.Record;
+import edu.berkeley.cs186.database.table.stats.TableStats;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,10 +25,17 @@ public class PNLJOperator extends JoinOperator {
           rightColumnName,
           transaction,
           JoinType.PNLJ);
+    this.stats = this.estimateStats();
+    this.cost = this.estimateIOCost();
   }
 
   public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
     return new PNLJIterator();
+  }
+
+  public int estimateIOCost() throws QueryPlanException {
+    /* TODO: Implement me! */
+    return -1;
   }
 
   /**

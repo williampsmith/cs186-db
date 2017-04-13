@@ -23,11 +23,19 @@ public class BNLJOperator extends JoinOperator {
     super(leftSource, rightSource, leftColumnName, rightColumnName, transaction, JoinType.BNLJ);
 
     this.numBuffers = transaction.getNumMemoryPages();
+    this.stats = this.estimateStats();
+    this.cost = this.estimateIOCost();
   }
 
   public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
     return new BNLJIterator();
   }
+
+  public int estimateIOCost() throws QueryPlanException {
+    /* TODO: Implement me! */
+    return -1;
+  }
+
 
   /**
    * An implementation of Iterator that provides an iterator interface for this operator.

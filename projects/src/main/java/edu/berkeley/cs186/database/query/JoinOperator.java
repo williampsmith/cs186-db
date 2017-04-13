@@ -58,6 +58,8 @@ public abstract class JoinOperator extends QueryOperator {
     this.transaction = transaction;
   }
 
+  public abstract Iterator<Record> iterator() throws QueryPlanException, DatabaseException;
+
   @Override
   public QueryOperator getSource() throws QueryPlanException {
     throw new QueryPlanException("There is no single source for join operators. Please use " +
@@ -121,6 +123,22 @@ public abstract class JoinOperator extends QueryOperator {
     }
     return r;
   }
+
+  /**
+   * Estimates the table statistics for the result of executing this query operator.
+   *
+   * @return estimated TableStats
+   */
+  public TableStats estimateStats() throws QueryPlanException {
+    TableStats leftStats = this.leftSource.getStats();
+    TableStats rightStats = this.rightSource.getStats();
+
+    return leftStats.copyWithJoin(this.leftColumnIndex,
+                                  rightStats,
+                                  this.rightColumnIndex);
+  }
+
+  public abstract int estimateIOCost() throws QueryPlanException;
 
   public Schema getSchema(String tableName) throws DatabaseException {
     return this.transaction.getSchema(tableName);

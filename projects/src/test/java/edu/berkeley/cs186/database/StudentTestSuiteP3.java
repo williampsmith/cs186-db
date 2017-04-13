@@ -1,7 +1,6 @@
 package edu.berkeley.cs186.database;
 
 import edu.berkeley.cs186.database.databox.*;
-import edu.berkeley.cs186.database.index.*;
 import edu.berkeley.cs186.database.io.*;
 import edu.berkeley.cs186.database.query.*;
 import edu.berkeley.cs186.database.table.stats.*;
@@ -26,22 +25,24 @@ import edu.berkeley.cs186.database.table.TestSchema;
         TestFloatDataBox.class,
         TestIntDataBox.class,
         TestStringDataBox.class,
-        TestLargeBPlusTree.class,
         TestLRUCache.class,
         TestPage.class,
         TestPageAllocator.class,
         TestGroupByOperator.class,
         TestIndexScanOperator.class,
         TestJoinOperator.class,
+        TestOptimalQueryPlanJoins.class,
+        TestOptimalQueryPlan.class,
         TestProjectOperator.class,
         TestQueryPlan.class,
+        TestQueryPlanCosts.class,
         TestSelectOperator.class,
         TestSourceOperator.class,
-        BoolHistogramTest.class,
-        FloatHistogramTest.class,
-        IntHistogramTest.class,
-        StringHistogramTest.class,
-        TableStatsTest.class,
+        TestBoolHistogram.class,
+        TestFloatHistogram.class,
+        TestIntHistogram.class,
+        TestStringHistogram.class,
+        TestTableStats.class,
         TestSchema.class,
         TestTable.class,
         TestDatabase.class,

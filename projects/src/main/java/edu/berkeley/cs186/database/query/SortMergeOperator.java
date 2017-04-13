@@ -27,6 +27,11 @@ public class SortMergeOperator extends JoinOperator {
   public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
     return new SortMergeOperator.SortMergeIterator();
   }
+  
+  public int estimateIOCost() throws QueryPlanException {
+    // You don't need to implement this.
+    throw new QueryPlanException("Not yet implemented!");
+  }
 
   /**
   * An implementation of Iterator that provides an iterator interface for this operator.
@@ -39,10 +44,10 @@ public class SortMergeOperator extends JoinOperator {
     }
 
     /**
-    * Checks if there are more record(s) to yield
-    *
-    * @return true if this iterator has another record to yield, otherwise false
-    */
+     * Checks if there are more record(s) to yield
+     *
+     * @return true if this iterator has another record to yield, otherwise false
+     */
     public boolean hasNext() {
       /* TODO */
       return false;
@@ -69,11 +74,11 @@ public class SortMergeOperator extends JoinOperator {
     }
 
     /**
-    * Yields the next record of this iterator.
-    *
-    * @return the next Record
-    * @throws NoSuchElementException if there are no more Records to yield
-    */
+     * Yields the next record of this iterator.
+     *
+     * @return the next Record
+     * @throws NoSuchElementException if there are no more Records to yield
+     */
     public Record next() {
       /* TODO */
       throw new NoSuchElementException();
@@ -87,14 +92,14 @@ public class SortMergeOperator extends JoinOperator {
     private class LeftRecordComparator implements Comparator<Record> {
       public int compare(Record o1, Record o2) {
         return o1.getValues().get(SortMergeOperator.this.getLeftColumnIndex()).compareTo(
-            o2.getValues().get(SortMergeOperator.this.getLeftColumnIndex()));
+                o2.getValues().get(SortMergeOperator.this.getLeftColumnIndex()));
       }
     }
 
     private class RightRecordComparator implements Comparator<Record> {
       public int compare(Record o1, Record o2) {
         return o1.getValues().get(SortMergeOperator.this.getRightColumnIndex()).compareTo(
-            o2.getValues().get(SortMergeOperator.this.getRightColumnIndex()));
+                o2.getValues().get(SortMergeOperator.this.getRightColumnIndex()));
       }
     }
   }

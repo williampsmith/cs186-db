@@ -15,7 +15,7 @@ import java.util.List;
 import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.TestUtils;
 import edu.berkeley.cs186.database.StudentTest;
-import edu.berkeley.cs186.database.StudentTestP3;
+import edu.berkeley.cs186.database.StudentTestP2;
 import edu.berkeley.cs186.database.databox.BoolDataBox;
 import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.databox.FloatDataBox;
@@ -32,79 +32,492 @@ import static org.junit.Assert.*;
 
 public class TestIndexScanOperator {
 
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
+  @Rule
+  public TemporaryFolder tempFolder = new TemporaryFolder();
 
-    @Test(timeout=5000)
-    public void testIndexScanEqualsRecords() throws QueryPlanException, DatabaseException, IOException {
-        File tempDir = tempFolder.newFolder("joinTest");
-        Database d = new Database(tempDir.getAbsolutePath(), 4);
-        Database.Transaction transaction = d.beginTransaction();
+  @Test(timeout=5000)
+  public void testIndexScanEqualsRecords() throws QueryPlanException, DatabaseException, IOException {
+    File tempDir = tempFolder.newFolder("joinTest");
+    Database d = new Database(tempDir.getAbsolutePath(), 4);
+    Database.Transaction transaction = d.beginTransaction();
 
-        Record r1 = TestUtils.createRecordWithAllTypesWithValue(1);
-        List<DataBox> r1Vals = r1.getValues();
-        Record r2 = TestUtils.createRecordWithAllTypesWithValue(2);
-        List<DataBox> r2Vals = r2.getValues();
-        Record r3 = TestUtils.createRecordWithAllTypesWithValue(3);
-        List<DataBox> r3Vals = r3.getValues();
-        Record r4 = TestUtils.createRecordWithAllTypesWithValue(4);
-        List<DataBox> r4Vals = r4.getValues();
-        Record r5 = TestUtils.createRecordWithAllTypesWithValue(5);
-        List<DataBox> r5Vals = r5.getValues();
-        Record r6 = TestUtils.createRecordWithAllTypesWithValue(6);
-        List<DataBox> r6Vals = r6.getValues();
-        List<DataBox> expectedRecordValues1 = new ArrayList<DataBox>();
-        List<DataBox> expectedRecordValues2 = new ArrayList<DataBox>();
-        List<DataBox> expectedRecordValues3 = new ArrayList<DataBox>();
-        List<DataBox> expectedRecordValues4 = new ArrayList<DataBox>();
-        List<DataBox> expectedRecordValues5 = new ArrayList<DataBox>();
-        List<DataBox> expectedRecordValues6 = new ArrayList<DataBox>();
+    Record r1 = TestUtils.createRecordWithAllTypesWithValue(1);
+    List<DataBox> r1Vals = r1.getValues();
+    Record r2 = TestUtils.createRecordWithAllTypesWithValue(2);
+    List<DataBox> r2Vals = r2.getValues();
+    Record r3 = TestUtils.createRecordWithAllTypesWithValue(3);
+    List<DataBox> r3Vals = r3.getValues();
+    Record r4 = TestUtils.createRecordWithAllTypesWithValue(4);
+    List<DataBox> r4Vals = r4.getValues();
+    Record r5 = TestUtils.createRecordWithAllTypesWithValue(5);
+    List<DataBox> r5Vals = r5.getValues();
+    Record r6 = TestUtils.createRecordWithAllTypesWithValue(6);
+    List<DataBox> r6Vals = r6.getValues();
+    List<DataBox> expectedRecordValues1 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues2 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues3 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues4 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues5 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues6 = new ArrayList<DataBox>();
 
 
-        for (int i = 0; i < 1; i++) {
-            for (DataBox val: r1Vals) {
-                expectedRecordValues1.add(val);
-            }
-            for (DataBox val: r2Vals) {
-                expectedRecordValues2.add(val);
-            }
-            for (DataBox val: r3Vals) {
-                expectedRecordValues3.add(val);
-            }
-            for (DataBox val: r4Vals) {
-                expectedRecordValues4.add(val);
-            }
-            for (DataBox val: r5Vals) {
-                expectedRecordValues5.add(val);
-            }
-            for (DataBox val: r6Vals) {
-                expectedRecordValues6.add(val);
-            }
-        }
-
-        Record expectedRecord3 = new Record(expectedRecordValues3);
-        List<String> indexList = new ArrayList<String>();
-        indexList.add("int");
-        d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "myTable", indexList);
-
-        for (int i = 0; i < 99; i++) {
-            transaction.addRecord("myTable", r3Vals);
-            transaction.addRecord("myTable", r5Vals);
-            transaction.addRecord("myTable", r2Vals);
-            transaction.addRecord("myTable", r1Vals);
-            transaction.addRecord("myTable", r6Vals);
-        }
-
-        QueryOperator s1 = new IndexScanOperator(transaction,"myTable", "int", QueryPlan.PredicateOperator.EQUALS, new IntDataBox(3));
-        Iterator<Record> outputIterator = s1.iterator();
-        int count = 0;
-
-        while (outputIterator.hasNext()) {
-            if (count < 99) {
-                assertEquals(expectedRecord3, outputIterator.next());
-            }
-            count++;
-        }
-        assertTrue(count == 99);
+    for (int i = 0; i < 1; i++) {
+      for (DataBox val: r1Vals) {
+        expectedRecordValues1.add(val);
+      }
+      for (DataBox val: r2Vals) {
+        expectedRecordValues2.add(val);
+      }
+      for (DataBox val: r3Vals) {
+        expectedRecordValues3.add(val);
+      }
+      for (DataBox val: r4Vals) {
+        expectedRecordValues4.add(val);
+      }
+      for (DataBox val: r5Vals) {
+        expectedRecordValues5.add(val);
+      }
+      for (DataBox val: r6Vals) {
+        expectedRecordValues6.add(val);
+      }
     }
+
+    Record expectedRecord3 = new Record(expectedRecordValues3);
+    List<String> indexList = new ArrayList<String>();
+    indexList.add("int");
+    d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "myTable", indexList);
+
+    for (int i = 0; i < 99; i++) {
+      transaction.addRecord("myTable", r3Vals);
+      transaction.addRecord("myTable", r5Vals);
+      transaction.addRecord("myTable", r2Vals);
+      transaction.addRecord("myTable", r1Vals);
+      transaction.addRecord("myTable", r6Vals);
+    }
+
+    QueryOperator s1 = new IndexScanOperator(transaction,"myTable", "int", QueryPlan.PredicateOperator.EQUALS, new IntDataBox(3));
+    Iterator<Record> outputIterator = s1.iterator();
+    int count = 0;
+
+    while (outputIterator.hasNext()) {
+      if (count < 99) {
+        assertEquals(expectedRecord3, outputIterator.next());
+      }
+      count++;
+    }
+    assertTrue(count == 99);
+  }
+
+  @Test(timeout=5000)
+  public void testIndexScanLessThanEqualsRecords() throws QueryPlanException, DatabaseException, IOException {
+    File tempDir = tempFolder.newFolder("joinTest");
+    Database d = new Database(tempDir.getAbsolutePath(), 4);
+    Database.Transaction transaction = d.beginTransaction();
+
+    Record r1 = TestUtils.createRecordWithAllTypesWithValue(1);
+    List<DataBox> r1Vals = r1.getValues();
+    Record r2 = TestUtils.createRecordWithAllTypesWithValue(2);
+    List<DataBox> r2Vals = r2.getValues();
+    Record r3 = TestUtils.createRecordWithAllTypesWithValue(3);
+    List<DataBox> r3Vals = r3.getValues();
+    Record r4 = TestUtils.createRecordWithAllTypesWithValue(4);
+    List<DataBox> r4Vals = r4.getValues();
+    Record r5 = TestUtils.createRecordWithAllTypesWithValue(5);
+    List<DataBox> r5Vals = r5.getValues();
+    Record r6 = TestUtils.createRecordWithAllTypesWithValue(6);
+    List<DataBox> r6Vals = r6.getValues();
+    List<DataBox> expectedRecordValues1 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues2 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues3 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues4 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues5 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues6 = new ArrayList<DataBox>();
+
+
+    for (int i = 0; i < 1; i++) {
+      for (DataBox val: r1Vals) {
+        expectedRecordValues1.add(val);
+      }
+      for (DataBox val: r2Vals) {
+        expectedRecordValues2.add(val);
+      }
+      for (DataBox val: r3Vals) {
+        expectedRecordValues3.add(val);
+      }
+      for (DataBox val: r4Vals) {
+        expectedRecordValues4.add(val);
+      }
+      for (DataBox val: r5Vals) {
+        expectedRecordValues5.add(val);
+      }
+      for (DataBox val: r6Vals) {
+        expectedRecordValues6.add(val);
+      }
+    }
+
+    Record expectedRecord1 = new Record(expectedRecordValues1);
+    Record expectedRecord2 = new Record(expectedRecordValues2);
+    Record expectedRecord3 = new Record(expectedRecordValues3);
+    List<String> indexList = new ArrayList<String>();
+    indexList.add("int");
+    d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "myTable", indexList);
+
+    for (int i = 0; i < 99; i++) {
+      transaction.addRecord("myTable", r3Vals);
+      transaction.addRecord("myTable", r5Vals);
+      transaction.addRecord("myTable", r2Vals);
+      transaction.addRecord("myTable", r1Vals);
+      transaction.addRecord("myTable", r6Vals);
+    }
+
+    QueryOperator s1 = new IndexScanOperator(transaction,"myTable", "int", QueryPlan.PredicateOperator.LESS_THAN_EQUALS, new IntDataBox(3));
+    Iterator<Record> outputIterator = s1.iterator();
+    int count = 0;
+
+    while (outputIterator.hasNext()) {
+      if (count < 99) {
+        assertEquals(expectedRecord1, outputIterator.next());
+      } else if (count < 99*2) {
+        assertEquals(expectedRecord2, outputIterator.next());
+      } else {
+        assertEquals(expectedRecord3, outputIterator.next());
+      }
+      count++;
+    }
+    assertTrue(count == 99*3);
+  }
+
+  @Test(timeout=5000)
+  public void testIndexScanLessThanRecords() throws QueryPlanException, DatabaseException, IOException {
+    File tempDir = tempFolder.newFolder("joinTest");
+    Database d = new Database(tempDir.getAbsolutePath(), 4);
+    Database.Transaction transaction = d.beginTransaction();
+
+    Record r1 = TestUtils.createRecordWithAllTypesWithValue(1);
+    List<DataBox> r1Vals = r1.getValues();
+    Record r2 = TestUtils.createRecordWithAllTypesWithValue(2);
+    List<DataBox> r2Vals = r2.getValues();
+    Record r3 = TestUtils.createRecordWithAllTypesWithValue(3);
+    List<DataBox> r3Vals = r3.getValues();
+    Record r4 = TestUtils.createRecordWithAllTypesWithValue(4);
+    List<DataBox> r4Vals = r4.getValues();
+    Record r5 = TestUtils.createRecordWithAllTypesWithValue(5);
+    List<DataBox> r5Vals = r5.getValues();
+    Record r6 = TestUtils.createRecordWithAllTypesWithValue(6);
+    List<DataBox> r6Vals = r6.getValues();
+    List<DataBox> expectedRecordValues1 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues2 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues3 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues4 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues5 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues6 = new ArrayList<DataBox>();
+
+
+    for (int i = 0; i < 1; i++) {
+      for (DataBox val: r1Vals) {
+        expectedRecordValues1.add(val);
+      }
+      for (DataBox val: r2Vals) {
+        expectedRecordValues2.add(val);
+      }
+      for (DataBox val: r3Vals) {
+        expectedRecordValues3.add(val);
+      }
+      for (DataBox val: r4Vals) {
+        expectedRecordValues4.add(val);
+      }
+      for (DataBox val: r5Vals) {
+        expectedRecordValues5.add(val);
+      }
+      for (DataBox val: r6Vals) {
+        expectedRecordValues6.add(val);
+      }
+    }
+
+    Record expectedRecord1 = new Record(expectedRecordValues1);
+    Record expectedRecord2 = new Record(expectedRecordValues2);
+    List<String> indexList = new ArrayList<String>();
+    indexList.add("int");
+    d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "myTable", indexList);
+
+    for (int i = 0; i < 99; i++) {
+      transaction.addRecord("myTable", r3Vals);
+      transaction.addRecord("myTable", r5Vals);
+      transaction.addRecord("myTable", r2Vals);
+      transaction.addRecord("myTable", r1Vals);
+      transaction.addRecord("myTable", r6Vals);
+    }
+
+    QueryOperator s1 = new IndexScanOperator(transaction,"myTable", "int", QueryPlan.PredicateOperator.LESS_THAN, new IntDataBox(3));
+    Iterator<Record> outputIterator = s1.iterator();
+    int count = 0;
+
+    while (outputIterator.hasNext()) {
+      if (count < 99) {
+        assertEquals(expectedRecord1, outputIterator.next());
+      } else {
+        assertEquals(expectedRecord2, outputIterator.next());
+      }
+      count++;
+    }
+    assertTrue(count == 99*2);
+  }
+
+  @Test(timeout=5000)
+  public void testIndexScanGreaterThanEqualsRecords() throws QueryPlanException, DatabaseException, IOException {
+    File tempDir = tempFolder.newFolder("joinTest");
+    Database d = new Database(tempDir.getAbsolutePath(), 4);
+    Database.Transaction transaction = d.beginTransaction();
+
+    Record r1 = TestUtils.createRecordWithAllTypesWithValue(1);
+    List<DataBox> r1Vals = r1.getValues();
+    Record r2 = TestUtils.createRecordWithAllTypesWithValue(2);
+    List<DataBox> r2Vals = r2.getValues();
+    Record r3 = TestUtils.createRecordWithAllTypesWithValue(3);
+    List<DataBox> r3Vals = r3.getValues();
+    Record r4 = TestUtils.createRecordWithAllTypesWithValue(4);
+    List<DataBox> r4Vals = r4.getValues();
+    Record r5 = TestUtils.createRecordWithAllTypesWithValue(5);
+    List<DataBox> r5Vals = r5.getValues();
+    Record r6 = TestUtils.createRecordWithAllTypesWithValue(6);
+    List<DataBox> r6Vals = r6.getValues();
+    List<DataBox> expectedRecordValues1 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues2 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues3 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues4 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues5 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues6 = new ArrayList<DataBox>();
+
+
+    for (int i = 0; i < 1; i++) {
+      for (DataBox val: r1Vals) {
+        expectedRecordValues1.add(val);
+      }
+      for (DataBox val: r2Vals) {
+        expectedRecordValues2.add(val);
+      }
+      for (DataBox val: r3Vals) {
+        expectedRecordValues3.add(val);
+      }
+      for (DataBox val: r4Vals) {
+        expectedRecordValues4.add(val);
+      }
+      for (DataBox val: r5Vals) {
+        expectedRecordValues5.add(val);
+      }
+      for (DataBox val: r6Vals) {
+        expectedRecordValues6.add(val);
+      }
+    }
+
+    Record expectedRecord3 = new Record(expectedRecordValues3);
+    Record expectedRecord5 = new Record(expectedRecordValues5);
+    Record expectedRecord6 = new Record(expectedRecordValues6);
+    List<String> indexList = new ArrayList<String>();
+    indexList.add("int");
+    d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "myTable", indexList);
+
+    for (int i = 0; i < 99; i++) {
+      transaction.addRecord("myTable", r3Vals);
+      transaction.addRecord("myTable", r5Vals);
+      transaction.addRecord("myTable", r2Vals);
+      transaction.addRecord("myTable", r1Vals);
+      transaction.addRecord("myTable", r6Vals);
+    }
+
+    QueryOperator s1 = new IndexScanOperator(transaction,"myTable", "int", QueryPlan.PredicateOperator.GREATER_THAN_EQUALS, new IntDataBox(3));
+    Iterator<Record> outputIterator = s1.iterator();
+    int count = 0;
+
+    while (outputIterator.hasNext()) {
+      if (count < 99) {
+        assertEquals(expectedRecord3, outputIterator.next());
+      } else if (count < 99*2) {
+        assertEquals(expectedRecord5, outputIterator.next());
+      } else {
+        assertEquals(expectedRecord6, outputIterator.next());
+      }
+      count++;
+    }
+    assertTrue(count == 99*3);
+  }
+
+  @Test(timeout=5000)
+  public void testIndexScanGreaterThanRecords() throws QueryPlanException, DatabaseException, IOException {
+    File tempDir = tempFolder.newFolder("joinTest");
+    Database d = new Database(tempDir.getAbsolutePath(), 4);
+    Database.Transaction transaction = d.beginTransaction();
+
+    Record r1 = TestUtils.createRecordWithAllTypesWithValue(1);
+    List<DataBox> r1Vals = r1.getValues();
+    Record r2 = TestUtils.createRecordWithAllTypesWithValue(2);
+    List<DataBox> r2Vals = r2.getValues();
+    Record r3 = TestUtils.createRecordWithAllTypesWithValue(3);
+    List<DataBox> r3Vals = r3.getValues();
+    Record r4 = TestUtils.createRecordWithAllTypesWithValue(4);
+    List<DataBox> r4Vals = r4.getValues();
+    Record r5 = TestUtils.createRecordWithAllTypesWithValue(5);
+    List<DataBox> r5Vals = r5.getValues();
+    Record r6 = TestUtils.createRecordWithAllTypesWithValue(6);
+    List<DataBox> r6Vals = r6.getValues();
+    List<DataBox> expectedRecordValues1 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues2 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues3 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues4 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues5 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues6 = new ArrayList<DataBox>();
+
+
+    for (int i = 0; i < 1; i++) {
+      for (DataBox val: r1Vals) {
+        expectedRecordValues1.add(val);
+      }
+      for (DataBox val: r2Vals) {
+        expectedRecordValues2.add(val);
+      }
+      for (DataBox val: r3Vals) {
+        expectedRecordValues3.add(val);
+      }
+      for (DataBox val: r4Vals) {
+        expectedRecordValues4.add(val);
+      }
+      for (DataBox val: r5Vals) {
+        expectedRecordValues5.add(val);
+      }
+      for (DataBox val: r6Vals) {
+        expectedRecordValues6.add(val);
+      }
+    }
+
+    Record expectedRecord5 = new Record(expectedRecordValues5);
+    Record expectedRecord6 = new Record(expectedRecordValues6);
+    List<String> indexList = new ArrayList<String>();
+    indexList.add("int");
+    d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "myTable", indexList);
+
+    for (int i = 0; i < 99; i++) {
+      transaction.addRecord("myTable", r3Vals);
+      transaction.addRecord("myTable", r5Vals);
+      transaction.addRecord("myTable", r2Vals);
+      transaction.addRecord("myTable", r1Vals);
+      transaction.addRecord("myTable", r6Vals);
+    }
+
+    QueryOperator s1 = new IndexScanOperator(transaction,"myTable", "int", QueryPlan.PredicateOperator.GREATER_THAN, new IntDataBox(3));
+    Iterator<Record> outputIterator = s1.iterator();
+    int count = 0;
+
+    while (outputIterator.hasNext()) {
+      if (count < 99) {
+        assertEquals(expectedRecord5, outputIterator.next());
+      } else {
+        assertEquals(expectedRecord6, outputIterator.next());
+      }
+      count++;
+    }
+    assertTrue(count == 99*2);
+  }
+
+  @Test(timeout=5000)
+  public void testIndexScanInvalidRecords() throws QueryPlanException, DatabaseException, IOException {
+    File tempDir = tempFolder.newFolder("joinTest");
+    Database d = new Database(tempDir.getAbsolutePath(), 4);
+    Database.Transaction transaction = d.beginTransaction();
+
+    Record r1 = TestUtils.createRecordWithAllTypesWithValue(1);
+    List<DataBox> r1Vals = r1.getValues();
+    Record r2 = TestUtils.createRecordWithAllTypesWithValue(2);
+    List<DataBox> r2Vals = r2.getValues();
+    Record r3 = TestUtils.createRecordWithAllTypesWithValue(3);
+    List<DataBox> r3Vals = r3.getValues();
+    Record r4 = TestUtils.createRecordWithAllTypesWithValue(4);
+    List<DataBox> r4Vals = r4.getValues();
+    Record r5 = TestUtils.createRecordWithAllTypesWithValue(5);
+    List<DataBox> r5Vals = r5.getValues();
+    Record r6 = TestUtils.createRecordWithAllTypesWithValue(6);
+    List<DataBox> r6Vals = r6.getValues();
+    List<DataBox> expectedRecordValues1 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues2 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues3 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues4 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues5 = new ArrayList<DataBox>();
+    List<DataBox> expectedRecordValues6 = new ArrayList<DataBox>();
+
+
+    for (int i = 0; i < 1; i++) {
+      for (DataBox val: r1Vals) {
+        expectedRecordValues1.add(val);
+      }
+      for (DataBox val: r2Vals) {
+        expectedRecordValues2.add(val);
+      }
+      for (DataBox val: r3Vals) {
+        expectedRecordValues3.add(val);
+      }
+      for (DataBox val: r4Vals) {
+        expectedRecordValues4.add(val);
+      }
+      for (DataBox val: r5Vals) {
+        expectedRecordValues5.add(val);
+      }
+      for (DataBox val: r6Vals) {
+        expectedRecordValues6.add(val);
+      }
+    }
+
+    List<String> indexList = new ArrayList<String>();
+    indexList.add("int");
+    d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "myTable", indexList);
+
+    for (int i = 0; i < 99; i++) {
+      transaction.addRecord("myTable", r3Vals);
+      transaction.addRecord("myTable", r5Vals);
+      transaction.addRecord("myTable", r2Vals);
+      transaction.addRecord("myTable", r1Vals);
+      transaction.addRecord("myTable", r6Vals);
+    }
+
+    QueryOperator s1 = new IndexScanOperator(transaction,"myTable", "int", QueryPlan.PredicateOperator.EQUALS, new IntDataBox(10));
+    Iterator<Record> outputIterator = s1.iterator();
+    int count = 0;
+
+    while (outputIterator.hasNext()) {
+      count++;
+    }
+    assertTrue(count == 0);
+  }
+
+  @Test(expected = QueryPlanException.class)
+  public void testIndexScanInvalidField() throws QueryPlanException, DatabaseException, IOException {
+    File tempDir = tempFolder.newFolder("joinTest");
+    Database d = new Database(tempDir.getAbsolutePath(), 4);
+    Database.Transaction transaction = d.beginTransaction();
+
+    Record r1 = TestUtils.createRecordWithAllTypesWithValue(1);
+    List<DataBox> r1Vals = r1.getValues();
+    Record r2 = TestUtils.createRecordWithAllTypesWithValue(2);
+    List<DataBox> r2Vals = r2.getValues();
+    Record r3 = TestUtils.createRecordWithAllTypesWithValue(3);
+    List<DataBox> r3Vals = r3.getValues();
+    Record r4 = TestUtils.createRecordWithAllTypesWithValue(4);
+    List<DataBox> r4Vals = r4.getValues();
+    Record r5 = TestUtils.createRecordWithAllTypesWithValue(5);
+    List<DataBox> r5Vals = r5.getValues();
+    Record r6 = TestUtils.createRecordWithAllTypesWithValue(6);
+    List<DataBox> r6Vals = r6.getValues();
+
+    List<String> indexList = new ArrayList<String>();
+    indexList.add("int");
+    d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "myTable", indexList);
+
+    for (int i = 0; i < 99; i++) {
+      transaction.addRecord("myTable", r3Vals);
+      transaction.addRecord("myTable", r5Vals);
+      transaction.addRecord("myTable", r2Vals);
+      transaction.addRecord("myTable", r1Vals);
+      transaction.addRecord("myTable", r6Vals);
+    }
+
+    QueryOperator s1 = new IndexScanOperator(transaction,"myTable", "nonexistentField", QueryPlan.PredicateOperator.EQUALS, new IntDataBox(10));
+  }
 }

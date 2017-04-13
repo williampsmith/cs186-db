@@ -26,10 +26,17 @@ public class GraceHashOperator extends JoinOperator {
             JoinType.GRACEHASH);
 
     this.numBuffers = transaction.getNumMemoryPages();
+    this.stats = this.estimateStats();
+    this.cost = this.estimateIOCost();
   }
 
   public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
     return new GraceHashIterator();
+  }
+
+  public int estimateIOCost() throws QueryPlanException {
+    /* TODO: Implement me! */
+    return -1;
   }
 
   /**

@@ -335,7 +335,9 @@ public class Database {
 
     public int getNumMemoryPages() throws DatabaseException {
       assert(this.active);
+
       return Database.this.numMemoryPages;
+
     }
 
     public void deleteRecord(String tableName, RecordID rid) throws DatabaseException {

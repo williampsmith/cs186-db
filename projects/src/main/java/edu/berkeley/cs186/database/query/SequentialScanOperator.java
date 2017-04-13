@@ -29,6 +29,8 @@ public class SequentialScanOperator extends QueryOperator {
     this.transaction = transaction;
     this.tableName = tableName;
     this.setOutputSchema(this.computeSchema());
+    this.stats = this.estimateStats();
+    this.cost = this.estimateIOCost();
   }
 
   public String getTableName() {
@@ -47,9 +49,30 @@ public class SequentialScanOperator extends QueryOperator {
     }
   }
 
-  @Override
-  public String toString() {
+  public String str() {
     return "type: " + this.getType() +
             "\ntable: " + this.tableName;
+  }
+
+
+  /**
+   * Estimates the table statistics for the result of executing this query operator.
+   *
+   * @return estimated TableStats
+   */
+  public TableStats estimateStats() throws QueryPlanException {
+    try {
+      return this.transaction.getStats(this.tableName);
+    } catch (DatabaseException de) {
+      throw new QueryPlanException(de);
+    }
+  }
+
+  public int estimateIOCost() throws QueryPlanException {
+    try {
+      return this.transaction.getNumDataPages(this.tableName);
+    } catch (DatabaseException de) {
+      throw new QueryPlanException(de);
+    }
   }
 }

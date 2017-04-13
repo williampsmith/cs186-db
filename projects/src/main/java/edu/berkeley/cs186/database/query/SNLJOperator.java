@@ -31,6 +31,10 @@ public class SNLJOperator extends JoinOperator {
           rightColumnName,
           transaction,
           JoinType.SNLJ);
+
+    this.stats = this.estimateStats();
+    this.cost = this.estimateIOCost();
+    
     this.leftSource = getLeftSource();
     this.rightSource = getRightSource();
     this.leftColumnIndex = getLeftColumnIndex();
@@ -43,6 +47,12 @@ public class SNLJOperator extends JoinOperator {
   public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
     return new SNLJIterator();
   }
+
+  public int estimateIOCost() throws QueryPlanException {
+    /* TODO: Implement me! */
+    return -1;
+  }
+
 
   /**
    * An implementation of Iterator that provides an iterator interface for this operator.

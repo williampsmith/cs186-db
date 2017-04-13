@@ -136,7 +136,7 @@ public class Table implements Iterable<Record>, Closeable {
   }
 
   public Iterator<Record> iterator() {
-      return new TableIterator();
+    return new TableIterator();
   }
 
   public Iterator<Page> pageIterator() {

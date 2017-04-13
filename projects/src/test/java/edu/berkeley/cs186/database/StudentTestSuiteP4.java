@@ -19,7 +19,7 @@ import edu.berkeley.cs186.database.table.TestSchema;
  * DO NOT CHANGE ANY OF THIS CODE.
  */
 @RunWith(Categories.class)
-@IncludeCategory(StudentTestP2.class)
+@IncludeCategory(StudentTestP4.class)
 @SuiteClasses({
         TestBoolDataBox.class,
         TestFloatDataBox.class,
@@ -48,4 +48,4 @@ import edu.berkeley.cs186.database.table.TestSchema;
         TestDatabase.class,
         TestDatabaseQueries.class
 })
-public class StudentTestSuiteP2 {}
+public class StudentTestSuiteP4 {}

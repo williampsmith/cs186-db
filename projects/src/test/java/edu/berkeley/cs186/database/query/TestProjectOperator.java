@@ -12,7 +12,7 @@ import java.util.List;
 import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.TestUtils;
 import edu.berkeley.cs186.database.StudentTest;
-import edu.berkeley.cs186.database.StudentTestP3;
+import edu.berkeley.cs186.database.StudentTestP2;
 import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.databox.FloatDataBox;
 import edu.berkeley.cs186.database.databox.IntDataBox;
@@ -27,7 +27,7 @@ public class TestProjectOperator {
   public Timeout globalTimeout = Timeout.seconds(1); // 1 seconds max per method tested
 
   @Test
-  public void testSelectOperatorSchema() throws QueryPlanException {
+  public void testOperatorSchema() throws QueryPlanException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     List<String> columnNames = new ArrayList<String>();
     columnNames.add("int");
