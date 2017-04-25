@@ -12,6 +12,7 @@ import edu.berkeley.cs186.database.databox.IntDataBox;
 import edu.berkeley.cs186.database.table.MarkerRecord;
 import edu.berkeley.cs186.database.table.Record;
 import edu.berkeley.cs186.database.table.Schema;
+import edu.berkeley.cs186.database.table.stats.TableStats;
 
 public class ProjectOperator extends QueryOperator {
   private List<String> columns;
@@ -61,6 +62,9 @@ public class ProjectOperator extends QueryOperator {
     // NOTE: Don't need to explicitly set the output schema because setting the source recomputes
     // the schema for the query optimization case.
     this.setSource(source);
+
+    this.stats = this.estimateStats();
+    this.cost = this.estimateIOCost();
   }
 
   protected Schema computeSchema() throws QueryPlanException {
@@ -158,6 +162,25 @@ public class ProjectOperator extends QueryOperator {
     this.averageCountValue = 0;
     return result;
   }
+
+  public String str() {
+    return "type: " + this.getType() +
+        "\ncolumns: " + this.columns;
+  }
+
+  /**
+   * Estimates the table statistics for the result of executing this query operator.
+   *
+   * @return estimated TableStats
+   */
+  public TableStats estimateStats() throws QueryPlanException {
+    return this.getSource().getStats();
+  }
+
+  public int estimateIOCost() throws QueryPlanException {
+    return this.getSource().getIOCost();
+  }
+
 
   /**
    * An implementation of Iterator that provides an iterator interface for this operator.

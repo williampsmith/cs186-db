@@ -2,6 +2,9 @@ package edu.berkeley.cs186.database.table.stats;
 
 import java.util.List;
 
+import edu.berkeley.cs186.database.databox.DataBox;
+import edu.berkeley.cs186.database.query.QueryPlan.PredicateOperator;
+
 /**
  * A parametrized type that stores histograms for a given value.
  *
@@ -23,6 +26,8 @@ public interface Histogram<T> {
    */
   void removeValue(T value);
 
+  float computeReductionFactor(PredicateOperator predicate,
+                               DataBox value);
   /**
    * Get the number of values within a given range, including start and up to but not including end.
    *
@@ -32,10 +37,14 @@ public interface Histogram<T> {
    */
   int getEntriesInRange(T start, T end);
 
-  /**
-   * Return all of the buckets in the histogram
-   *
-   * @return the list of buckets
-   */
-  List<Bucket<T>> getAllBuckets();
+  int getMinValue();
+
+  int getMaxValue();
+
+  int getNumDistinct();
+
+  Histogram<T> copyWithReduction(float reductionFactor);
+
+  Histogram<T> copyWithPredicate(PredicateOperator predicate,
+                                 DataBox value);
 }

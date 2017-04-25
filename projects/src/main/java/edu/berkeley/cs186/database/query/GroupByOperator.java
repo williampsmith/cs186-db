@@ -8,6 +8,8 @@ import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.table.MarkerRecord;
 import edu.berkeley.cs186.database.table.Record;
 import edu.berkeley.cs186.database.table.Schema;
+import edu.berkeley.cs186.database.table.stats.TableStats;
+
 
 public class GroupByOperator extends QueryOperator {
   private int groupByColumnIndex;
@@ -31,6 +33,9 @@ public class GroupByOperator extends QueryOperator {
     this.groupByColumn = this.checkSchemaForColumn(sourceSchema, groupByColumn);
 
     this.groupByColumnIndex = sourceSchema.getFieldNames().indexOf(this.groupByColumn);
+    
+    this.stats = this.estimateStats();
+    this.cost = this.estimateIOCost();
   }
 
   public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {
@@ -40,6 +45,25 @@ public class GroupByOperator extends QueryOperator {
   protected Schema computeSchema() throws QueryPlanException {
     return this.getSource().getOutputSchema();
   }
+
+  public String str() {
+    return "type: " + this.getType() +
+        "\ncolumn: " + this.groupByColumn;
+  }
+
+  /**
+   * Estimates the table statistics for the result of executing this query operator.
+   *
+   * @return estimated TableStats
+   */
+  public TableStats estimateStats() throws QueryPlanException {
+    return this.getSource().getStats();
+  }
+
+  public int estimateIOCost() throws QueryPlanException {
+    return this.getSource().getIOCost();
+  }
+
 
   /**
    * An implementation of Iterator that provides an iterator interface for this operator.

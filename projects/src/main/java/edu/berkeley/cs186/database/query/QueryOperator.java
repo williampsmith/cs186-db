@@ -12,6 +12,8 @@ public abstract class QueryOperator {
   private QueryOperator source;
   private QueryOperator destination;
   private Schema operatorSchema;
+  protected TableStats stats;
+  protected int cost;
 
   public enum OperatorType {
     JOIN,
@@ -46,11 +48,11 @@ public abstract class QueryOperator {
     return this.type.equals(OperatorType.JOIN);
   }
 
-  public boolean isWhere() {
+  public boolean isSelect() {
     return this.type.equals(OperatorType.SELECT);
   }
 
-  public boolean isSelect() {
+  public boolean isProject() {
     return this.type.equals(OperatorType.PROJECT);
   }
 
@@ -110,9 +112,13 @@ public abstract class QueryOperator {
     if (fromSchema.equals(specified)) {
       return true;
     }
-    if (fromSchema.contains(".")) {
-      String[] splits = fromSchema.split("\\.");
-      String schemaColName = splits[1];
+    if (!specified.contains(".")) {
+      String schemaColName = fromSchema;
+      if (fromSchema.contains(".")) {
+        String[] splits = fromSchema.split("\\.");
+        schemaColName = splits[1];
+      }
+
       return schemaColName.equals(specified);
     }
     return false;
@@ -143,5 +149,39 @@ public abstract class QueryOperator {
       throw new QueryPlanException("No column " + columnName + " found.");
     }
     return foundName;
+  }
+
+  public String str() {
+    return "type: " + this.getType();
+  }
+
+  public String toString() {
+    String r = this.str();
+    if (this.source != null) {
+      r += "\n" + this.source.toString().replaceAll("(?m)^", "\t");
+    }
+    return r;
+  }
+
+  /**
+   * Estimates the table statistics for the result of executing this query operator.
+   *
+   * @return estimated TableStats
+   */
+  protected abstract TableStats estimateStats() throws QueryPlanException;
+
+  /**
+   * Estimates the IO cost of executing this query operator.
+   *
+   * @return estimated number of IO's performed
+   */
+  protected abstract int estimateIOCost() throws QueryPlanException;
+
+  public TableStats getStats() {
+    return this.stats;
+  }
+
+  public int getIOCost() {
+    return this.cost;
   }
 }

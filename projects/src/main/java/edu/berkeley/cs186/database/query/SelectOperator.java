@@ -10,9 +10,11 @@ import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.table.MarkerRecord;
 import edu.berkeley.cs186.database.table.Record;
 import edu.berkeley.cs186.database.table.Schema;
+import edu.berkeley.cs186.database.table.stats.TableStats;
 
 public class SelectOperator extends QueryOperator {
   private int columnIndex;
+  private String columnName;
   private QueryPlan.PredicateOperator operator;
   private DataBox value;
 
@@ -33,13 +35,41 @@ public class SelectOperator extends QueryOperator {
     super(OperatorType.SELECT, source);
     this.operator = operator;
     this.value = value;
-    columnName = this.checkSchemaForColumn(source.getOutputSchema(), columnName);
-    this.columnIndex = this.getOutputSchema().getFieldNames().indexOf(columnName);
+
+    this.columnName = this.checkSchemaForColumn(source.getOutputSchema(), columnName);
+    this.columnIndex = this.getOutputSchema().getFieldNames().indexOf(this.columnName);
+
+    this.stats = this.estimateStats();
+    this.cost = this.estimateIOCost();
   }
 
   public Schema computeSchema() throws QueryPlanException {
     return this.getSource().getOutputSchema();
   }
+
+  public String str() {
+    return "type: " + this.getType() +
+        "\ncolumn: " + this.columnName +
+        "\noperator: " + this.operator +
+        "\nvalue: " + this.value;
+  }
+
+  /**
+   * Estimates the table statistics for the result of executing this query operator.
+   *
+   * @return estimated TableStats
+   */
+  public TableStats estimateStats() throws QueryPlanException {
+    TableStats stats = this.getSource().getStats();
+    return stats.copyWithPredicate(this.columnIndex,
+                                   this.operator,
+                                   this.value);
+  }
+
+  public int estimateIOCost() throws QueryPlanException {
+    return this.getSource().getIOCost();
+  }
+
 
   public Iterator<Record> iterator() throws QueryPlanException, DatabaseException { return new SelectIterator(); }
 

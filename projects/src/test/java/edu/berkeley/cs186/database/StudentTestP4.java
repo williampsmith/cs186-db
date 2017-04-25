@@ -5,4 +5,4 @@ package edu.berkeley.cs186.database;
  *
  * DO NOT CHANGE ANY OF THIS CODE.
  */
-public interface StudentTestP3 {}
+public interface StudentTestP4 {}

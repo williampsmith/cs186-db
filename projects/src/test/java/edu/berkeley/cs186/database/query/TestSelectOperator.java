@@ -14,7 +14,7 @@ import java.util.Set;
 import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.TestUtils;
 import edu.berkeley.cs186.database.StudentTest;
-import edu.berkeley.cs186.database.StudentTestP3;
+import edu.berkeley.cs186.database.StudentTestP2;
 import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.databox.IntDataBox;
 import edu.berkeley.cs186.database.table.Record;
@@ -26,7 +26,7 @@ public class TestSelectOperator {
   public Timeout globalTimeout = Timeout.seconds(1); // 1 seconds max per method tested
 
   @Test
-  public void testWhereOperatorSchema() throws QueryPlanException {
+  public void testOperatorSchema() throws QueryPlanException {
     TestSourceOperator sourceOperator = new TestSourceOperator();
     SelectOperator selectOperator = new SelectOperator(sourceOperator, "int",
             QueryPlan.PredicateOperator.EQUALS, new IntDataBox(1));

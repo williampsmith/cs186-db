@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.Timeout;
 
 import java.io.File;
@@ -15,8 +16,6 @@ import java.util.Random;
 
 import edu.berkeley.cs186.database.Database;
 import edu.berkeley.cs186.database.DatabaseException;
-import edu.berkeley.cs186.database.StudentTest;
-import edu.berkeley.cs186.database.StudentTestP3;
 import edu.berkeley.cs186.database.TestUtils;
 import edu.berkeley.cs186.database.databox.BoolDataBox;
 import edu.berkeley.cs186.database.databox.DataBox;
