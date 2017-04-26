@@ -118,8 +118,6 @@ public class IndexScanOperator extends QueryOperator {
     }
 
     int solution = (int) Math.ceil(rf * (double) (numberOfPages * numberOfRecords));
-    System.out.println("Reduction factor: " + rf);
-    System.out.println("Solution: " + solution);
     return (int) Math.ceil(rf * (double) (numberOfPages + numberOfRecords));
   }
 
