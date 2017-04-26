@@ -200,8 +200,34 @@ public class IntHistogram implements Histogram<Integer>{
    */
   public float computeReductionFactor(PredicateOperator predicate,
                                       DataBox value) {
-    /* TODO: Implement me! */
-    return 1.0f;
+    switch (predicate) {
+      case EQUALS:
+        return computeEqualsReductionFactor();
+      case LESS_THAN:
+        return computeLessThanReductionFactor(value);
+      case GREATER_THAN:
+        return computeGreaterThanReductionFactor(value);
+      case LESS_THAN_EQUALS:
+        return computeLessThanReductionFactor(value) + computeEqualsReductionFactor();
+      case GREATER_THAN_EQUALS:
+        return computeGreaterThanReductionFactor(value) + computeEqualsReductionFactor();
+      default:
+        return 0.0f;
+    }
+  }
+
+  public float computeEqualsReductionFactor() {
+    return 1.0f / this.getNumDistinct();
+  }
+
+  public float computeLessThanReductionFactor(DataBox value) {
+    return (float) (value.getInt() - this.getMinValue()) /
+            (this.getMaxValue() - this.getMinValue());
+  }
+
+  public float computeGreaterThanReductionFactor(DataBox value) {
+    return (float) (this.getMaxValue() - value.getInt()) /
+            (this.getMaxValue() - this.getMinValue());
   }
 
   /**

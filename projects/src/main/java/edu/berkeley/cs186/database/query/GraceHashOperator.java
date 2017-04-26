@@ -35,8 +35,10 @@ public class GraceHashOperator extends JoinOperator {
   }
 
   public int estimateIOCost() throws QueryPlanException {
-    /* TODO: Implement me! */
-    return -1;
+    /* DONE: Implement me! */
+    TableStats leftStats = this.getLeftSource().getStats();
+    TableStats rightStats = this.getRightSource().getStats();
+    return 3 * (leftStats.getNumPages() + rightStats.getNumPages());
   }
 
   /**

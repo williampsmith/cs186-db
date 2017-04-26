@@ -258,7 +258,27 @@ public class QueryPlan {
    * @throws QueryPlanException
    */
   private QueryOperator pushDownSelects(QueryOperator source, int except) throws QueryPlanException, DatabaseException {
-    /* TODO: Implement me! */
+    /* DONE: Implement me! */
+    // NOTE: except == -1 implies that we push down all selects
+
+    int index = 0;
+    String exceptName = null;
+    if (except != -1) {
+      exceptName = this.selectColumnNames.get(except);
+    }
+
+    for (String selectColumn : this.selectColumnNames) {
+      if (Objects.equals(selectColumn, exceptName)) { // false if exceptName still null
+        continue;
+      }
+
+      PredicateOperator operator = this.selectOperators.get(index);
+      DataBox value = this.selectDataBoxes.get(index);
+      SelectOperator selectOperator = new SelectOperator(source, selectColumn, operator, value);
+      source = selectOperator;
+      index++;
+    }
+
     return source;
   }
 
@@ -276,16 +296,26 @@ public class QueryPlan {
    * @throws QueryPlanException
    */
   private QueryOperator minCostSingleAccess(String table) throws DatabaseException, QueryPlanException {
-    QueryOperator minOp = null;
-
     // Find the cost of a sequential scan of the table
-    // TODO: Implement me!
+    // DONE: Implement me!
+    QueryOperator minOp = new SequentialScanOperator(this.transaction, table);
+    int minCost = minOp.getIOCost();
 
     // For each eligible index column, find the cost of an index scan of the
     // table and retain the lowest cost operator
-    // TODO: Implement me!
+    // DONE: Implement me!
     List<Integer> selectIndices = this.getEligibleIndexColumns(table);
     int minSelectIdx = -1;
+
+    for (Integer i : selectIndices) {
+      IndexScanOperator iso = new IndexScanOperator(this.transaction, table, this.selectColumnNames.get(i),
+              this.selectOperators.get(i), this.selectDataBoxes.get(i));
+      if (iso.getIOCost() < minCost) {
+        minOp = iso;
+        minCost = iso.getIOCost();
+        minSelectIdx = i;
+      }
+    }
 
     // Push down SELECT predicates that apply to this table and that were not
     // used for an index scan
@@ -421,6 +451,7 @@ public class QueryPlan {
       index++;
     }
   }
+
 
   private void addGroupBy() throws QueryPlanException, DatabaseException {
     if (this.groupByColumn != null) {

@@ -5,6 +5,7 @@ import edu.berkeley.cs186.database.DatabaseException;
 import edu.berkeley.cs186.database.databox.DataBox;
 import edu.berkeley.cs186.database.io.Page;
 import edu.berkeley.cs186.database.table.Record;
+import edu.berkeley.cs186.database.table.stats.TableStats;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,8 +33,12 @@ public class BNLJOperator extends JoinOperator {
   }
 
   public int estimateIOCost() throws QueryPlanException {
-    /* TODO: Implement me! */
-    return -1;
+    /* DONE: Implement me! */
+    /* cost = (# pages in R / (B - 2)) * (# pages in S) + (# pages in R) */
+    TableStats leftStats = this.getLeftSource().getStats();
+    TableStats rightStats = this.getRightSource().getStats();
+    return (int) (Math.ceil(((double) leftStats.getNumPages()) /
+            (this.numBuffers - 2)) * rightStats.getNumPages() + leftStats.getNumPages());
   }
 
 

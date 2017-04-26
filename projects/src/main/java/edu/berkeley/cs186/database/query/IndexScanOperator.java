@@ -96,7 +96,31 @@ public class IndexScanOperator extends QueryOperator {
    */
   public int estimateIOCost() throws QueryPlanException {
     /* TODO: Implement me! */
-    return -1;
+    float rf;
+    int numberOfPages;
+    long numberOfRecords;
+    try {
+      rf = this.transaction.getStats(this.tableName).getReductionFactor(this.columnIndex, this.predicate, this.value);
+    } catch (DatabaseException e) {
+      throw new QueryPlanException("Error: Database exception while getting stats from transaction.");
+    }
+
+    try {
+      numberOfPages = this.transaction.getNumIndexPages(this.tableName, this.columnName);
+    } catch (DatabaseException e) {
+      throw new QueryPlanException("Error: Database exception while getting num index pages from transaction.");
+    }
+
+    try {
+      numberOfRecords = this.transaction.getNumRecords(this.tableName);
+    } catch (DatabaseException e) {
+      throw new QueryPlanException("Error: Database exception while getting num records from transaction.");
+    }
+
+    int solution = (int) Math.ceil(rf * (double) (numberOfPages * numberOfRecords));
+    System.out.println("Reduction factor: " + rf);
+    System.out.println("Solution: " + solution);
+    return (int) Math.ceil(rf * (double) (numberOfPages + numberOfRecords));
   }
 
   public Iterator<Record> iterator() throws QueryPlanException, DatabaseException {

@@ -34,8 +34,11 @@ public class PNLJOperator extends JoinOperator {
   }
 
   public int estimateIOCost() throws QueryPlanException {
-    /* TODO: Implement me! */
-    return -1;
+    /* DONE: Implement me! */
+    /* cost = (# pages in R) * (# pages in S) + (# pages in R) */
+    TableStats leftStats = this.getLeftSource().getStats();
+    TableStats rightStats = this.getRightSource().getStats();
+    return leftStats.getNumPages() * rightStats.getNumPages() + leftStats.getNumPages();
   }
 
   /**
