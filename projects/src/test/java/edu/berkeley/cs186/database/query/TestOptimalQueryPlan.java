@@ -214,4 +214,130 @@ public class TestOptimalQueryPlan {
     transaction.end();
   }
 
+  @Test(timeout=1000)
+  @Category(StudentTestP4.class)
+  public void testSimpleSelectIteratorGreaterThan() throws DatabaseException, QueryPlanException {
+    // DONE: Implement me
+    Database.Transaction transaction = this.database.beginTransaction();
+    QueryPlan queryPlan = transaction.query(this.defaulTableName);
+
+    queryPlan.select("int", QueryPlan.PredicateOperator.GREATER_THAN, new IntDataBox(0));
+
+    Iterator<Record> outputIterator = queryPlan.executeOptimal();
+
+    while (outputIterator.hasNext()) {
+      Record record = outputIterator.next();
+      assertTrue(record.getValues().get(1).getInt() > 0);
+    }
+
+    QueryOperator finalOperator = queryPlan.getFinalOperator();
+    String tree = "type: SELECT\n" +
+            "column: testAllTypes.int\n" +
+            "operator: GREATER_THAN\n" +
+            "value: 0\n" +
+            "\ttype: SEQSCAN\n" +
+            "\ttable: testAllTypes";
+    assertEquals(tree, finalOperator.toString());
+
+    transaction.end();
+  }
+
+  @Test(timeout=1000)
+  @Category(StudentTestP4.class)
+  public void testSimpleSelectIteratorLessThan() throws DatabaseException, QueryPlanException {
+    // DONE: Implement me
+    Database.Transaction transaction = this.database.beginTransaction();
+    QueryPlan queryPlan = transaction.query(this.defaulTableName);
+
+    queryPlan.select("int", QueryPlan.PredicateOperator.LESS_THAN, new IntDataBox(2));
+    Iterator<Record> outputIterator = queryPlan.executeOptimal();
+
+    while (outputIterator.hasNext()) {
+      Record record = outputIterator.next();
+      assertTrue(record.getValues().get(1).getInt() < 2);
+    }
+
+    QueryOperator finalOperator = queryPlan.getFinalOperator();
+    String tree = "type: SELECT\n" +
+            "column: testAllTypes.int\n" +
+            "operator: LESS_THAN\n" +
+            "value: 2\n" +
+            "\ttype: SEQSCAN\n" +
+            "\ttable: testAllTypes";
+    assertEquals(tree, finalOperator.toString());
+
+    transaction.end();
+  }
+
+  @Test(timeout=1000)
+  @Category(StudentTestP4.class)
+  public void testSimpleSelectIteratorLessThanEquals() throws DatabaseException, QueryPlanException {
+    // DONE: Implement me
+    Database.Transaction transaction = this.database.beginTransaction();
+    QueryPlan queryPlan = transaction.query(this.defaulTableName);
+
+    queryPlan.select("int", QueryPlan.PredicateOperator.LESS_THAN_EQUALS, new IntDataBox(2));
+
+    Iterator<Record> outputIterator = queryPlan.executeOptimal();
+
+    while (outputIterator.hasNext()) {
+      Record record = outputIterator.next();
+
+      assertTrue(record.getValues().get(1).getInt() <= 2);
+    }
+
+    QueryOperator finalOperator = queryPlan.getFinalOperator();
+    String tree = "type: SELECT\n" +
+            "column: testAllTypes.int\n" +
+            "operator: LESS_THAN_EQUALS\n" +
+            "value: 2\n" +
+            "\ttype: SEQSCAN\n" +
+            "\ttable: testAllTypes";
+    assertEquals(tree, finalOperator.toString());
+
+    transaction.end();
+  }
+
+  @Test(timeout=1000)
+  @Category(StudentTestP4.class)
+  public void testSimpleSelectIteratorEquals() throws DatabaseException, QueryPlanException {
+    // DONE: Implement me
+    Database.Transaction transaction = this.database.beginTransaction();
+    QueryPlan queryPlan = transaction.query(this.defaulTableName);
+
+    queryPlan.select("int", QueryPlan.PredicateOperator.EQUALS, new IntDataBox(1));
+
+    Iterator<Record> outputIterator = queryPlan.executeOptimal();
+
+    while (outputIterator.hasNext()) {
+      Record record = outputIterator.next();
+
+      assertTrue(record.getValues().get(1).getInt() == 1);
+    }
+
+    QueryOperator finalOperator = queryPlan.getFinalOperator();
+    String tree = "type: SELECT\n" +
+            "column: testAllTypes.int\n" +
+            "operator: EQUALS\n" +
+            "value: 1\n" +
+            "\ttype: SEQSCAN\n" +
+            "\ttable: testAllTypes";
+    assertEquals(tree, finalOperator.toString());
+
+    transaction.end();
+  }
+
+  @Test(timeout=1000)
+  @Category(StudentTestP4.class)
+  public void testEmptySelectIteratorEquals() throws DatabaseException, QueryPlanException {
+    // DONE: Implement me
+    Database.Transaction transaction = this.database.beginTransaction();
+    QueryPlan queryPlan = transaction.query(this.defaulTableName);
+
+    queryPlan.select("int", QueryPlan.PredicateOperator.EQUALS, new IntDataBox(-1));
+
+    Iterator<Record> outputIterator = queryPlan.executeOptimal();
+    assertFalse(outputIterator.hasNext());
+    transaction.end();
+  }
 }

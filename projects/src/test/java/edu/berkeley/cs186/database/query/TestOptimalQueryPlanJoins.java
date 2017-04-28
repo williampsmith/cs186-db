@@ -283,4 +283,245 @@ public class TestOptimalQueryPlanJoins {
 
     transaction.end();
   }
+
+
+  @Test(timeout=5000)
+  @Category(StudentTestP4.class)
+  public void testEmptyTable() throws DatabaseException, QueryPlanException {
+    // DONE: Implement me
+    File tempDir;
+    try {
+      tempDir = tempFolder.newFolder("joinTest");
+    } catch (IOException e) {
+      throw new DatabaseException("Could not open the file");
+    }
+    Database d = new Database(tempDir.getAbsolutePath());
+    d.createTable(TestUtils.createSchemaWithAllTypes(), "leftTable");
+    d.createTable(TestUtils.createSchemaWithAllTypes(), "rightTable");
+    Database.Transaction transaction = d.beginTransaction();
+    QueryPlan queryPlan = transaction.query("leftTable");
+    queryPlan.join("rightTable", "leftTable.int", "rightTable.int");
+    Iterator<Record> outputIterator = queryPlan.executeOptimal();
+    assertFalse(outputIterator.hasNext());
+    transaction.end();
+  }
+
+  @Test(timeout=5000)
+  @Category(StudentTestP4.class)
+  public void testEmptyJoinResults() throws DatabaseException, QueryPlanException {
+    // DONE: Implement me
+    File tempDir;
+    try {
+      tempDir = tempFolder.newFolder("joinTest");
+    } catch (IOException e) {
+      throw new DatabaseException("Could not open the file");
+    }
+    Database d = new Database(tempDir.getAbsolutePath());
+    d.createTable(TestUtils.createSchemaWithAllTypes(), "leftTable");
+    d.createTable(TestUtils.createSchemaWithAllTypes(), "rightTable");
+
+    /** populate tables */
+    Record r1 = TestUtils.createRecordWithAllTypesWithValue(1);
+    List<DataBox> r1Vals = r1.getValues();
+    Record r2 = TestUtils.createRecordWithAllTypesWithValue(2);
+    List<DataBox> r2Vals = r2.getValues();
+
+    Database.Transaction transaction = d.beginTransaction();
+
+    for (int i = 0; i < 288; i++) {
+      transaction.addRecord("leftTable", r2Vals);
+      transaction.addRecord("rightTable", r1Vals);
+    }
+    /** end populate tables */
+
+    QueryPlan queryPlan = transaction.query("leftTable");
+    queryPlan.join("rightTable", "leftTable.int", "rightTable.int");
+    Iterator<Record> outputIterator = queryPlan.executeOptimal();
+
+    /** Check query plan iterator output */
+    assertFalse(outputIterator.hasNext());
+    transaction.end();
+  }
+
+  @Test(timeout=5000)
+  @Category(StudentTestP4.class)
+  public void testSingleJoinResults() throws DatabaseException, QueryPlanException {
+    // DONE: Implement me
+    File tempDir;
+    try {
+      tempDir = tempFolder.newFolder("joinTest");
+    } catch (IOException e) {
+      throw new DatabaseException("Could not open the file");
+    }
+    Database d = new Database(tempDir.getAbsolutePath());
+    d.createTable(TestUtils.createSchemaWithAllTypes(), "leftTable");
+    d.createTable(TestUtils.createSchemaWithAllTypes(), "rightTable");
+
+    /** populate tables */
+    Record r1 = TestUtils.createRecordWithAllTypesWithValue(1);
+    List<DataBox> r1Vals = r1.getValues();
+    Record r2 = TestUtils.createRecordWithAllTypesWithValue(2);
+    List<DataBox> r2Vals = r2.getValues();
+    Record r3 = TestUtils.createRecordWithAllTypesWithValue(3);
+    List<DataBox> r3Vals = r3.getValues();
+
+    Database.Transaction transaction = d.beginTransaction();
+
+    for (int i = 0; i < 144; i++) {
+      transaction.addRecord("leftTable", r2Vals);
+      transaction.addRecord("rightTable", r1Vals);
+    }
+
+    transaction.addRecord("leftTable", r3Vals);
+    transaction.addRecord("rightTable", r3Vals);
+
+    for (int i = 0; i < 144; i++) {
+      transaction.addRecord("leftTable", r2Vals);
+      transaction.addRecord("rightTable", r1Vals);
+    }
+    /** end populate tables */
+
+    QueryPlan queryPlan = transaction.query("leftTable");
+    queryPlan.join("rightTable", "leftTable.int", "rightTable.int");
+    Iterator<Record> outputIterator = queryPlan.executeOptimal();
+
+    /** Check query plan iterator output */
+    assertTrue(outputIterator.hasNext());
+    outputIterator.next();
+    assertFalse(outputIterator.hasNext());
+    transaction.end();
+  }
+
+  @Test(timeout=5000, expected=QueryPlanException.class)
+  @Category(StudentTestP4.class)
+  public void testEmptyQueryPlan() throws DatabaseException, QueryPlanException {
+    // DONE: Implement me
+    Database.Transaction transaction = this.database.beginTransaction();
+    transaction.queryAs(this.defaulTableName, "leftTable");
+    transaction.queryAs(this.defaulTableName, "rightTable");
+    QueryPlan queryPlan = transaction.query("leftTable");
+    queryPlan.join("leftTable", "", ""); // cartesian product join (not supported)
+    queryPlan.executeOptimal();
+  }
+
+  @Test(timeout=5000)
+  @Category(StudentTestP4.class)
+  public void testIndexUsed() throws DatabaseException, QueryPlanException {
+    // DONE: Implement me
+    File tempDir;
+    try {
+      tempDir = tempFolder.newFolder("joinTest");
+    } catch (IOException e) {
+      throw new DatabaseException("Could not open the file");
+    }
+
+    Database d = new Database(tempDir.getAbsolutePath());
+    Database.Transaction transaction = d.beginTransaction();
+    List<String> indexList = new ArrayList<String>();
+    indexList.add("int");
+    d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "leftTable", indexList);
+    d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "rightTable", indexList);
+
+
+    // create diverse dataset -> very high reduction factor
+    for (int i = 0; i < 1000; i++) {
+      List<DataBox> tempVals = TestUtils.createRecordWithAllTypesWithValue(i).getValues();
+      transaction.addRecord("leftTable", tempVals);
+    }
+
+    // add one join value
+    List<DataBox> matchingVals = TestUtils.createRecordWithAllTypesWithValue(1000).getValues();
+    transaction.addRecord("leftTable", matchingVals);
+    transaction.addRecord("rightTable", matchingVals);
+
+    for (int i = 1001; i < 2000; i++) {
+      List<DataBox> tempVals = TestUtils.createRecordWithAllTypesWithValue(i).getValues();
+      transaction.addRecord("rightTable", tempVals);
+    }
+
+    QueryPlan queryPlan = transaction.query("leftTable");
+    queryPlan.join("rightTable", "leftTable.int", "rightTable.int");
+    queryPlan.select("leftTable.int", QueryPlan.PredicateOperator.EQUALS, new IntDataBox(1));
+    queryPlan.executeOptimal();
+
+    QueryOperator finalOperator = queryPlan.getFinalOperator();
+
+    String tree = "type: BNLJ\n" +
+            "leftColumn: leftTable.int\n" +
+            "rightColumn: rightTable.int\n" +
+            "\t(left)\n" +
+            "\ttype: INDEXSCAN\n" +
+            "\ttable: leftTable\n" +
+            "\tcolumn: leftTable.int\n" +
+            "\toperator: EQUALS\n" +
+            "\tvalue: 1\n" +
+            "\n" +
+            "\t(right)\n" +
+            "\ttype: SEQSCAN\n" +
+            "\ttable: rightTable";
+    assertEquals(tree, finalOperator.toString());
+
+    transaction.end();
+  }
+
+  @Test(timeout=5000)
+  @Category(StudentTestP4.class)
+  public void testIndexNotUsed() throws DatabaseException, QueryPlanException {
+    // DONE: Implement me
+    File tempDir;
+    try {
+      tempDir = tempFolder.newFolder("joinTest");
+    } catch (IOException e) {
+      throw new DatabaseException("Could not open the file");
+    }
+
+    Database d = new Database(tempDir.getAbsolutePath());
+    Database.Transaction transaction = d.beginTransaction();
+    List<String> indexList = new ArrayList<String>();
+    indexList.add("int");
+    d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "leftTable", indexList);
+    d.createTableWithIndices(TestUtils.createSchemaWithAllTypes(), "rightTable", indexList);
+
+
+    // create diverse dataset -> very high reduction factor
+    for (int i = 0; i < 1000; i++) {
+      List<DataBox> tempVals = TestUtils.createRecordWithAllTypesWithValue(1).getValues();
+      transaction.addRecord("leftTable", tempVals);
+    }
+
+    // add one join value
+    List<DataBox> matchingVals = TestUtils.createRecordWithAllTypesWithValue(2).getValues();
+    transaction.addRecord("leftTable", matchingVals);
+    transaction.addRecord("rightTable", matchingVals);
+
+    for (int i = 1001; i < 2000; i++) {
+      List<DataBox> tempVals = TestUtils.createRecordWithAllTypesWithValue(3).getValues();
+      transaction.addRecord("rightTable", tempVals);
+    }
+
+    QueryPlan queryPlan = transaction.query("leftTable");
+    queryPlan.join("rightTable", "leftTable.int", "rightTable.int");
+    queryPlan.select("leftTable.int", QueryPlan.PredicateOperator.EQUALS, new IntDataBox(1));
+    queryPlan.executeOptimal();
+
+    QueryOperator finalOperator = queryPlan.getFinalOperator();
+
+    String tree = "type: BNLJ\n" +
+            "leftColumn: leftTable.int\n" +
+            "rightColumn: rightTable.int\n" +
+            "\t(left)\n" +
+            "\ttype: SELECT\n" +
+            "\tcolumn: leftTable.int\n" +
+            "\toperator: EQUALS\n" +
+            "\tvalue: 1\n" +
+            "\t\ttype: SEQSCAN\n" +
+            "\t\ttable: leftTable\n" +
+            "\n" +
+            "\t(right)\n" +
+            "\ttype: SEQSCAN\n" +
+            "\ttable: rightTable";
+    assertEquals(tree, finalOperator.toString());
+
+    transaction.end();
+  }
 }

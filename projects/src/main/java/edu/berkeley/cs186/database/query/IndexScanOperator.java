@@ -95,7 +95,7 @@ public class IndexScanOperator extends QueryOperator {
    * @throws QueryPlanException
    */
   public int estimateIOCost() throws QueryPlanException {
-    /* TODO: Implement me! */
+    /* DONE: Implement me! */
     float rf;
     int numberOfPages;
     long numberOfRecords;
