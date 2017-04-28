@@ -407,7 +407,7 @@ public class QueryPlan {
         Set<String> newTables = new HashSet<String>();
         newTables.addAll(prevTables);
         newTables.add(pass1TableName);
-        if (map.containsKey(newTables)) { // consider which ((a,b) or (b, a)) is minimal
+        if (map.containsKey(newTables)) {
           if (minCostOperator.getIOCost() < map.get(newTables).getIOCost()) {
             map.put(newTables, minCostOperator);
           }
