@@ -259,28 +259,31 @@ public class QueryPlan {
    */
   private QueryOperator pushDownSelects(QueryOperator source, int except) throws QueryPlanException, DatabaseException {
     /* DONE: Implement me! */
-    // NOTE: except == -1 implies that we push down all selects
+//     NOTE: except == -1 implies that we push down all selects
 
     int index = 0;
-    String exceptName = null;
-    if (except != -1) {
-      exceptName = this.selectColumnNames.get(except);
-    }
-
     for (String selectColumn : this.selectColumnNames) {
-      if (Objects.equals(selectColumn, exceptName)) { // false if exceptName still null
+      if (index == except) { // false if exceptName still null
         continue;
       }
 
-      PredicateOperator operator = this.selectOperators.get(index);
-      DataBox value = this.selectDataBoxes.get(index);
-      SelectOperator selectOperator = new SelectOperator(source, selectColumn, operator, value);
+      PredicateOperator operator;
+      DataBox value;
+      SelectOperator selectOperator;
+      try {
+        operator = this.selectOperators.get(index);
+        value = this.selectDataBoxes.get(index);
+        selectOperator = new SelectOperator(source, selectColumn, operator, value);
+      } catch (QueryPlanException e) { // if predicate does not belong to this table
+        continue;
+      }
       source = selectOperator;
       index++;
     }
 
     return source;
   }
+
 
   /**
    * Finds the lowest cost QueryOperator that scans the given table. First
@@ -308,8 +311,19 @@ public class QueryPlan {
     int minSelectIdx = -1;
 
     for (Integer i : selectIndices) {
-      IndexScanOperator iso = new IndexScanOperator(this.transaction, table, this.selectColumnNames.get(i),
-              this.selectOperators.get(i), this.selectDataBoxes.get(i));
+      PredicateOperator operator;
+      DataBox value;
+      QueryOperator iso;
+      try {
+        operator = this.selectOperators.get(i);
+        value = this.selectDataBoxes.get(i);
+        iso = new IndexScanOperator(this.transaction, table, this.selectColumnNames.get(i),
+                operator, value);
+      } catch (QueryPlanException e) { // if predicate does not belong to this table
+        continue;
+      }
+
+
       if (iso.getIOCost() < minCost) {
         minOp = iso;
         minCost = iso.getIOCost();
@@ -336,9 +350,16 @@ public class QueryPlan {
                                         String leftColumn,
                                         String rightColumn) throws QueryPlanException,
                                                                    DatabaseException {
-    QueryOperator minOp = null;
-    /* TODO: Implement me! */
+    /* DONE: Implement me! */
+    QueryOperator minOp = new SNLJOperator(leftOp, rightOp, leftColumn, rightColumn, this.transaction);
+    minOp = costMin(minOp, new PNLJOperator(leftOp, rightOp, leftColumn, rightColumn, this.transaction));
+    minOp = costMin(minOp, new BNLJOperator(leftOp, rightOp, leftColumn, rightColumn, this.transaction));
+    minOp = costMin(minOp, new GraceHashOperator(leftOp, rightOp, leftColumn, rightColumn, this.transaction));
     return minOp;
+  }
+
+  private QueryOperator costMin(QueryOperator a, QueryOperator b) {
+    return a.getIOCost() < b.getIOCost() ? a : b;
   }
 
   /**
@@ -356,9 +377,75 @@ public class QueryPlan {
   private Map<Set, QueryOperator> minCostJoins(Map<Set, QueryOperator> prevMap,
                                                Map<Set, QueryOperator> pass1Map) throws QueryPlanException,
                                                                                         DatabaseException {
+    /* DONE: Implement me! */
     Map<Set, QueryOperator> map = new HashMap<Set, QueryOperator>();
-    /* TODO: Implement me! */
+    Iterator<Map.Entry<Set, QueryOperator>> prevMapIter = prevMap.entrySet().iterator();
+
+    while (prevMapIter.hasNext()) {
+      // Outer loop. Consider all multi-table join plans
+      Map.Entry<Set, QueryOperator> prevMapEntry = prevMapIter.next();
+      Set<String> prevTables = prevMapEntry.getKey();
+      QueryOperator prevOperator = prevMapEntry.getValue();
+      Iterator<Map.Entry<Set, QueryOperator>> pass1MapIter = pass1Map.entrySet().iterator();
+
+      while (pass1MapIter.hasNext()) {
+        // Inner loop. Consider each single relation table plan
+        Map.Entry<Set, QueryOperator> pass1MapEntry = pass1MapIter.next();
+        Set<String> pass1Table = pass1MapEntry.getKey();
+        QueryOperator pass1Operator = pass1MapEntry.getValue();
+        String pass1TableName = pass1Table.iterator().next();
+
+        if (prevTables.equals(pass1Table)) {
+          continue;
+        }
+
+        QueryOperator minCostOperator;
+        List<String> joinList = this.getJoinList(prevTables, pass1TableName);
+        if (joinList == null) { // cartesian product
+          continue;
+        }
+
+        minCostOperator = this.minCostJoinType(prevOperator, pass1Operator, joinList.get(0), joinList.get(1));
+        Set<String> newTables = new HashSet<String>();
+        newTables.addAll(prevTables);
+        newTables.add(pass1TableName);
+        if (map.containsKey(newTables)) { // consider which ((a,b) or (b, a)) is minimal
+          if (minCostOperator.getIOCost() < map.get(newTables).getIOCost()) {
+            map.put(newTables, minCostOperator);
+          }
+        } else {
+          map.put(newTables, minCostOperator);
+        }
+      }
+    }
+
+    if (map.size() == 0) {
+      throw new QueryPlanException("Query plan yielded no results.");
+    }
+
     return map;
+  }
+
+  private List<String> getJoinList (Set<String> prevTables, String pass1Table) {
+    for (String prevTable : prevTables) {
+      for (int i = 0; i < this.joinLeftColumnNames.size(); i++) {
+        String joinLeftTable = this.joinLeftColumnNames.get(i).split("\\.")[0];
+        String joinRightTable = this.joinRightColumnNames.get(i).split("\\.")[0];
+
+        if (prevTable.equals(joinLeftTable) && pass1Table.equals(joinRightTable)) {
+          List<String> joinTuple = new ArrayList<String>(2);
+          joinTuple.add(0, this.joinLeftColumnNames.get(i));
+          joinTuple.add(1, this.joinRightColumnNames.get(i));
+          return joinTuple;
+        } else if (prevTable.equals(joinRightTable) && pass1Table.equals(joinLeftTable)) {
+          List<String> joinTuple = new ArrayList<String>(2);
+          joinTuple.add(0, this.joinRightColumnNames.get(i));
+          joinTuple.add(1, this.joinLeftColumnNames.get(i));
+          return joinTuple;
+        }
+      }
+    }
+    return null;
   }
 
   /**
