@@ -259,8 +259,6 @@ public class QueryPlan {
    */
   private QueryOperator pushDownSelects(QueryOperator source, int except) throws QueryPlanException, DatabaseException {
     /* DONE: Implement me! */
-//     NOTE: except == -1 implies that we push down all selects
-
     int index = 0;
     for (String selectColumn : this.selectColumnNames) {
       if (index == except) { // false if exceptName still null
